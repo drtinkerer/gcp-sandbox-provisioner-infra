@@ -1,0 +1,26 @@
+name: GCP Sandbox request
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        type: choice
+        description: Select the duration for which access is required.
+        options: 
+        - 1 h
+        - 1 d
+      message:
+        required: true
+      use-emoji:
+        type: boolean
+        description: Include  emojis
+      environment:
+        type: environment
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send greeting
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", ""]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
