@@ -59,15 +59,16 @@ jobs:
       #    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
       #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
       #
-    - name: create var
+    - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
+    - name: "Create expiry timestamp"
+      run: echo "HOUR_DURATION=$(echo '${{ inputs.DURATION  }}' | cut -d' ' -f1)" >> $GITHUB_ENV
     - name: test
-      run: echo $PROJECT_NAME
+      run: echo $PROJECT_NAME && echo $HOUR_DURATION
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
         PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project
-        HOUR_DURATION="$(echo '${{ inputs.DURATION  }}' | cut -d' ' -f1)"
         PAYLOAD='{"email": "${{ inputs.USER_EMAIL  }}", "project" : "$PROJECT_NAME"}'
         echo $PAYLOAD
         #gcloud tasks create-http-task testdump1 --queue=sandbox-project-deletion-triggers --url=https://ptsv2.com/t/q1zof-1668273128/post  --location=us-west1 --method=POST --schedule-time=$(date -v+5M -u +"%Y-%m-%dT%H:%M:%SZ") --body-content={"my":"data"}
