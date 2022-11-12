@@ -37,7 +37,7 @@ on:
 jobs:
   greet:
     runs-on: ubuntu-latest
-
+    steps:
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
