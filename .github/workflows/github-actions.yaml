@@ -60,7 +60,7 @@ jobs:
       #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
       #
     - name: create var
-      run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $PROJECT_NAME
+      run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
     - name: test
       run: echo $PROJECT_NAME
 
