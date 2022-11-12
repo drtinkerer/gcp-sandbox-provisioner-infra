@@ -38,6 +38,7 @@ jobs:
   greet:
     runs-on: ubuntu-latest
     steps:
+    - uses: 'actions/checkout@v1'
     - id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
@@ -48,3 +49,9 @@ jobs:
 
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
+
+    - name: 'Create GCP Project'
+      run: 'gcloud projects create ${{ inputs.USER_EMAIL }}-sandbox --folder=sandbox'
+
+    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
+      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
