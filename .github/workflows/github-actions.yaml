@@ -3,13 +3,35 @@ name: GCP Sandbox request
 on:
   workflow_dispatch:
     inputs:
-      name:
+      USER_EMAIL:
+        description: "Email of user"
+        required: true
+        type: string
+        default: "vishal.kapse@cldcvr.com"
+      PERMISION_SET:
+        description: "Access role for user"
         type: choice
-        description: Select the duration for which access is required.
-        options: 
-        - 1 h
-        - 1 d
-      message:
+        options:
+          - ADMINISTRATOR
+          - READ_ONLY
+        required: true
+      DURATION:
+        description: "Select the duration of access required in hours "
+        type: choice
+        required: true
+        options:
+          - 1 Hours
+          - 2 Hours
+          - 4 Hours
+          - 8 Hours
+          - 16 Hours
+          - 40 Hours
+      PURPOSE:
+        description: "Short description"
+        type: string
+      SUPPORT_TICKET:
+        description: "Paste the support ticket url here"
+        type: string
         required: true
 
 jobs:
@@ -18,4 +40,4 @@ jobs:
 
     steps:
     - name: Send greeting
-      run: echo "${{ github.event.inputs.message }} ${{ github.event.inputs.name }}"
+      run: echo "${{ github.event.inputs.USER_EMAIL }} ${{ github.event.inputs.DURATION }}"
