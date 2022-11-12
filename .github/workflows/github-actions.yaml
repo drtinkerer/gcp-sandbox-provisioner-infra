@@ -51,7 +51,7 @@ jobs:
       run: 'gcloud info'
 
     - name: 'Create GCP Project'
-      run: 'gcloud projects create ${{ inputs.USER_EMAIL }}-sandbox --folder=sandbox'
+      run: PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1) &&  gcloud projects create $PROJECT_NAME --folder=sandbox
 
     - name: 'Grant user IAM access by adding to Sandbox-Users Group'
       run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
