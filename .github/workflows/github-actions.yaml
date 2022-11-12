@@ -61,14 +61,14 @@ jobs:
       #
     - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
-    - name: "Extract numeric duration in hours"
-      run: echo "HOUR_DURATION=$(echo '${{ inputs.DURATION  }}' | cut -d' ' -f1)" >> $GITHUB_ENV
     - name: "Create expiry timestamp"
-      run: echo "DATE_PARAM='-v+${{ env.HOUR_DURATION  }}H'" >> $GITHUB_ENV
+      run: |
+        echo "VALIDITY_HOURS=$(echo '${{ inputs.DURATION  }}' | cut -d' ' -f1)" >> $GITHUB_ENV
+        echo "DATE_PARAM='-v+${{ env.VALIDITY_HOURS  }}H'" >> $GITHUB_ENV
 
       
     - name: test
-      run: echo $PROJECT_NAME && echo $HOUR_DURATION && echo $DATE_PARAM
+      run: echo $PROJECT_NAME && echo $DATE_PARAM
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
