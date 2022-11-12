@@ -64,7 +64,7 @@ jobs:
     - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
     - name: "Generate expiry timestamp"
-      run: EXPIRES_AT=$(date --date="${{ inputs.DURATION}}" +"%Y-%m-%dT%H:%M:%SZ")
+      run: EXPIRES_AT=$(date --date="${{ inputs.DURATION}}" +"%Y-%m-%dT%H:%M:%SZ") >> $GITHUB_ENV
 
       
     - name: test
