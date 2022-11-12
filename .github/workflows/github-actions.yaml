@@ -51,7 +51,7 @@ jobs:
       #      run: 'gcloud info'
       #
     - name: "Test"
-      run: PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1) &&  echo ${{ env.PROJECT_NAME }}
+      run: PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1) &&  echo PROJECT_NAME
 
       #
       #    - name: 'Create GCP Project'
