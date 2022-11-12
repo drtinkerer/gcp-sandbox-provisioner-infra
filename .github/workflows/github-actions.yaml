@@ -64,13 +64,11 @@ jobs:
     - name: "Generate expiry timestamp"
       run: echo "EXPIRES_AT=$(date --date='${{ inputs.DURATION  }}' +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
-      
     - name: test
       run: echo $PROJECT_NAME && echo $EXPIRES_AT 
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
-        PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project
-        PAYLOAD='{"email": "${{ inputs.USER_EMAIL  }}", "project" : "$PROJECT_NAME"}'
+        PAYLOAD='{"email": "${{ inputs.USER_EMAIL  }}", "project" : "${{ env.PROJECT_NAME  }}"}'
         echo $PAYLOAD
-        #gcloud tasks create-http-task testdump1 --queue=sandbox-project-deletion-triggers --url=https://ptsv2.com/t/q1zof-1668273128/post  --location=us-west1 --method=POST --schedule-time=$(date -v+5M -u +"%Y-%m-%dT%H:%M:%SZ") --body-content={"my":"data"}
+        #gcloud tasks create-http-task --queue=sandbox-project-deletion-triggers --url=https://ptsv2.com/t/q1zof-1668273128/post  --location=us-west1 --method=POST --schedule-time=$EXPIRES_AT --body-content=$PAYLOAD
