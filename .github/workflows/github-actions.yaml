@@ -64,9 +64,9 @@ jobs:
     - name: "Extract numeric duration in hours"
       run: echo "HOUR_DURATION=$(echo '${{ inputs.DURATION  }}' | cut -d' ' -f1)" >> $GITHUB_ENV
     - name: "Create expiry timestamp"
-      run: echo "DATE_PARAM='-v+${{ env.HOUR_DURATION  }}H'" >> $GITHUB_ENV
+      run: echo "DATE_PARAM=v+${{ env.HOUR_DURATION  }}H" >> $GITHUB_ENV
     - name: "Generate expiry timestamp"
-      run: EXPIRES_AT=$(date ${{ env.DATE_PARAM }} -u +"%Y-%m-%dT%H:%M:%SZ")
+      run: EXPIRES_AT=$(date -${{ env.DATE_PARAM }}H -u +"%Y-%m-%dT%H:%M:%SZ")
 
       
     - name: test
