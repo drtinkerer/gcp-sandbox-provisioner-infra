@@ -38,7 +38,7 @@ jobs:
   greet:
     runs-on: ubuntu-latest
     steps:
-    - uses: 'actions/checkout@v1'
+      #    - uses: 'actions/checkout@v1'
       #    - id: 'auth'
       #      uses: 'google-github-actions/auth@v1'
       #      with:
@@ -59,6 +59,11 @@ jobs:
       #    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
       #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
       #
+    - name: create var
+      run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $PROJECT_NAME
+    - name: test
+      run: echo $PROJECT_NAME
+
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
         PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project
