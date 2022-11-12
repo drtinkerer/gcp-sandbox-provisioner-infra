@@ -60,7 +60,7 @@ jobs:
       #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
       #
     - name: date
-      run: date --help
+      run: date --date="40 Hours" +"%Y-%m-%dT%H:%M:%SZ"
     - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
     - name: "Generate expiry timestamp"
