@@ -66,11 +66,11 @@ jobs:
     - name: "Create expiry timestamp"
       run: echo "DATE_PARAM='-v+${{ env.HOUR_DURATION  }}H'" >> $GITHUB_ENV
     - name: "Generate expiry timestamp"
-      run: EXPIRES_AT=$(date $DATE_PARAM -u +"%Y-%m-%dT%H:%M:%SZ")
+      run: EXPIRES_AT=$(date ${{ env.DATE_PARAM }} -u +"%Y-%m-%dT%H:%M:%SZ")
 
       
     - name: test
-      run: echo $PROJECT_NAME && echo $EXPIRES_AT
+      run: echo $PROJECT_NAME && echo $EXPIRES_AT && echo $DATE_PARAM
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
