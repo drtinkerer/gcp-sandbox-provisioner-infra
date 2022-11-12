@@ -59,12 +59,10 @@ jobs:
       #    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
       #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
       #
-    - name: date
-      run: date --date="40 Hours" +"%Y-%m-%dT%H:%M:%SZ"
     - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL}} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
     - name: "Generate expiry timestamp"
-      run: EXPIRES_AT=$(date --date="${{ inputs.DURATION}}" +"%Y-%m-%dT%H:%M:%SZ") >> $GITHUB_ENV
+      run: echo 'EXPIRES_AT=$(date --date="${{ inputs.DURATION}}" +"%Y-%m-%dT%H:%M:%SZ")' >> $GITHUB_ENV
 
       
     - name: test
