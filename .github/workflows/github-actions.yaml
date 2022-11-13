@@ -37,6 +37,8 @@ on:
 jobs:
   greet:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
     - uses: 'actions/checkout@v1'
     - id: 'auth'
@@ -50,22 +52,20 @@ jobs:
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
 
-
-      #    - name: 'Create GCP Project'
-      #      run: | 
-      #        PROJECT_NAME="$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project" 
-      #        gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
-      #
-      #    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
-      #      run: 'gcloud identity groups memberships add --group-email=sandbox-users@cloudpoet.in --member-email=${{ inputs.USER_EMAIL }}'
-      #
     - name: "Create project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
+
     - name: "Generate expiry timestamp"
       run: echo "EXPIRES_AT=$(date --date='${{ inputs.DURATION  }}' +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
-    - name: test
-      run: echo $PROJECT_NAME && echo $EXPIRES_AT 
+    - name: 'Create GCP Project and link it to Billing account'
+      run: | 
+        gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
+        gcloud billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }}
+
+    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
+      run: 'gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}'
+
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
       run: |
@@ -78,3 +78,9 @@ jobs:
           --schedule-time=$EXPIRES_AT \
           --body-content=$PAYLOAD
 
+    - name: 'Alert on Slack about project creation status'
+      uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          config: .github/config/slack.yaml
+        if: always()
