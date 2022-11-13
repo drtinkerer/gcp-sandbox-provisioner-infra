@@ -61,7 +61,8 @@ jobs:
     - name: 'Create GCP Project and link it to Billing account'
       run: | 
         #gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
-        gcloud beta billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }} --quiet
+        gcloud components install beta
+        gcloud beta billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }} 
 
     - name: 'Grant user IAM access by adding to Sandbox-Users Group'
       run: 'gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}'
