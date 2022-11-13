@@ -74,4 +74,5 @@ jobs:
       #        echo $PAYLOAD
 
     - name: 'Create GCP Task'
-      run: gcloud tasks create-http-task --queue=sandbox-project-deletion-triggers --url=https://ptsv2.com/t/q1zof-1668273128/post  --location=us-west1 --method=POST --schedule-time=$EXPIRES_AT --body-content={'email': '${{ inputs.USER_EMAIL  }}', 'project' : '${{ env.PROJECT_NAME  }}'}
+      run: "gcloud tasks create-http-task --queue=sandbox-project-deletion-triggers --url=https://ptsv2.com/t/q1zof-1668273128/post  --location=us-west1 --method=POST --schedule-time=$EXPIRES_AT --body-content={'email': '${{ inputs.USER_EMAIL  }}', 'project' : '${{ env.PROJECT_NAME  }}'}"
+
