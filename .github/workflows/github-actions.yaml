@@ -80,7 +80,7 @@ jobs:
 
     - name: 'Alert on Slack about project creation status'
       uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          config: .github/config/slack.yaml
-        if: always()
+      with:
+        status: ${{ job.status }}
+        config: .github/config/slack.yaml
+      if: always()
