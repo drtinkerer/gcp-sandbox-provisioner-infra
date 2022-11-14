@@ -3,10 +3,34 @@ name: GCP Nuke Project
 on: [repository_dispatch]
 
 jobs:
-  build:
+  gcp_nuke:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+    - uses: 'actions/checkout@v1'
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
     steps:
     - uses: actions/checkout@v1
-    - name: dispatch trigger
-      run: |
-        echo "${{ github.event.client_payload.project }}"
+    - name: "Install gcloud cli beta"
+      run: gcloud components install beta
+
+    - name: "Disable billing on project"
+      run: gcloud beta  billing projects unlink ${{ github.event.client_payload.project }}
+
+    - name: "Delete project"
+      run: gcloud projects delete ${{ github.event.client_payload.project }}
+
+    - name: 'Alert on Slack about project creation status'
+      uses: act10ns/slack@v1
+      with:
+        status: ${{ job.status }}
+        config: .github/config/slack.yaml
+      if: always()
