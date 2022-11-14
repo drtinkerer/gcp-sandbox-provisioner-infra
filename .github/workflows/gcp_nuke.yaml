@@ -24,7 +24,7 @@ jobs:
       run: gcloud beta  billing projects unlink ${{ github.event.client_payload.project }}
 
     - name: "Delete project"
-      run: gcloud projects delete ${{ github.event.client_payload.project }}
+      run: gcloud projects delete ${{ github.event.client_payload.project }} --quiet
 
     - name: 'Alert on Slack about project creation status'
       uses: act10ns/slack@v1
