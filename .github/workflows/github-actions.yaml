@@ -68,11 +68,13 @@ jobs:
       run: gcloud projects add-iam-policy-binding $PROJECT_NAME --member='user:${{inputs.USER_EMAIL}}' --role='roles/editor'
 
 
+'{"event_type": "hello","client_payload": {"project_name": "$PROJECT_NAME"}}'
+
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry timestamp'
       run: |
-        PAYLOAD={'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}
+        PAYLOAD= {'event_type':'gcp_nuke','client_payload':{'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}}
         gcloud tasks create-http-task \
-          --header:"authorization: Bearer ${{secrets.GITHUB_ACCESS_TOKEN}}"
+          --header="authorization:Bearer ${{secrets.GITHUB_ACCESS_TOKEN}}"
           --queue=sandbox-project-deletion-triggers \
           --url=${{ secrets.SCHEDULER_URL }} \
           --location=us-west1 \
