@@ -49,7 +49,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v1'
 
     - name: "Generate a variable for project name unique per user"
-      run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
+      run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project-$(date +%s)" >> $GITHUB_ENV
 
     - name: "Generate expiry timestamp from the duration from inputs"
       run: echo "EXPIRES_AT=$(date --date='${{ inputs.DURATION  }}' +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
@@ -63,8 +63,9 @@ jobs:
         gcloud components install beta
         gcloud beta billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }} 
 
-    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
-      run: gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}
+    - name: 'Grant user IAM access to newly created project'
+      #run: gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}
+      run: gcloud projects add-iam-policy-binding $PROJECT_NAME --member='user:${{inputs.USER_EMAIL}}' --role='roles/editor'
 
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry timestamp'
