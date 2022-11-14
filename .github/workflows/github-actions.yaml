@@ -63,8 +63,8 @@ jobs:
       #        gcloud components install beta
       #        gcloud beta billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }} 
       #
-    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
-      run: gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}
+      #    - name: 'Grant user IAM access by adding to Sandbox-Users Group'
+      #      run: gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}
 
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry timestamp'
