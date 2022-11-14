@@ -1,0 +1,12 @@
+name: GCP Nuke Project
+
+on: [repository_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: dispatch trigger
+      run: |
+        echo "repository_dispatch triggered"
