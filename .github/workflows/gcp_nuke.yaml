@@ -25,7 +25,7 @@ jobs:
     - name: "Delete project"
       run: gcloud projects delete ${{ github.event.client_payload.project }} --quiet
 
-    - name: 'Alert on Slack about project creation status'
+    - name: 'Alert on Slack about project deletion status'
       uses: act10ns/slack@v1
       with:
         status: ${{ job.status }}
