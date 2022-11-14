@@ -54,9 +54,9 @@ jobs:
     - name: "Generate expiry timestamp from the duration from inputs"
       run: echo "EXPIRES_AT=$(date --date='${{ inputs.DURATION  }}' +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
-    - name: 'Create GCP Project and link it to Billing account'
-      run: | 
-        gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
+      #- name: 'Create GCP Project and link it to Billing account'
+      #run: | 
+        #gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
 
     - name: 'Link newly created project to a Billing account'
       run: |
