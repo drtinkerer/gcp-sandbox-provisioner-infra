@@ -9,4 +9,4 @@ jobs:
     - uses: actions/checkout@v1
     - name: dispatch trigger
       run: |
-        echo "${{ github.event.client_payload.foo }}"
+        echo "${{ github.event.client_payload.project_name }}"
