@@ -1,4 +1,4 @@
-name: GCP Sandbox request
+name: GCP Sandbox provisioning
 
 on:
   workflow_dispatch:
@@ -7,7 +7,6 @@ on:
         description: "Email of user"
         required: true
         type: string
-        default: "vishal.kapse@cldcvr.com"
       PERMISION_SET:
         description: "Access role for user"
         type: choice
@@ -35,7 +34,7 @@ on:
         required: true
 
 jobs:
-  greet:
+  provisioning_gcp_project:
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -49,31 +48,31 @@ jobs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
 
-    - name: 'Use gcloud CLI'
-      run: 'gcloud info'
-
-    - name: "Create project name unique per user"
+    - name: "Generate a variable for project name unique per user"
       run: echo "PROJECT_NAME=$(echo ${{ inputs.USER_EMAIL  }} | cut -d'@' -f1)-sandbox-project" >> $GITHUB_ENV
 
-    - name: "Generate expiry timestamp"
+    - name: "Generate expiry timestamp from the duration from inputs"
       run: echo "EXPIRES_AT=$(date --date='${{ inputs.DURATION  }}' +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
     - name: 'Create GCP Project and link it to Billing account'
       run: | 
-        #gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
+        gcloud projects create $PROJECT_NAME --folder=${{ secrets.FOLDER_ID }}
+
+    - name: 'Link newly created project to a Billing account'
+      run: |
         gcloud components install beta
         gcloud beta billing projects link $PROJECT_NAME --billing-account ${{ secrets.BILLING_ACCOUNT_ID }} 
 
     - name: 'Grant user IAM access by adding to Sandbox-Users Group'
-      run: 'gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}'
+      run: gcloud identity groups memberships add --group-email=${{secrets.SANDBOX_GROUP_EMAIL}} --member-email=${{inputs.USER_EMAIL}}
 
 
-    - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry duration'
+    - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry timestamp'
       run: |
         PAYLOAD={'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}
         gcloud tasks create-http-task \
           --queue=sandbox-project-deletion-triggers \
-          --url=https://ptsv2.com/t/q1zof-1668273128/post  \
+          --url=${{ secrets.SCHEDULER_URL }}
           --location=us-west1 \
           --method=POST \
           --schedule-time=$EXPIRES_AT \
