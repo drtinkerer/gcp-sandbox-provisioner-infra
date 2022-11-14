@@ -19,6 +19,7 @@ on:
         type: choice
         required: true
         options:
+          - 5 Minutes
           - 1 Hours
           - 2 Hours
           - 4 Hours
