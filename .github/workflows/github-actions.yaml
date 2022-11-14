@@ -72,7 +72,7 @@ jobs:
         PAYLOAD={'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}
         gcloud tasks create-http-task \
           --queue=sandbox-project-deletion-triggers \
-          --url=${{ secrets.SCHEDULER_URL }}
+          --url=${{ secrets.SCHEDULER_URL }} \
           --location=us-west1 \
           --method=POST \
           --schedule-time=$EXPIRES_AT \
