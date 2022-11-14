@@ -74,7 +74,7 @@ jobs:
       run: |
         PAYLOAD={'event_type':'gcp_nuke','client_payload':{'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}}
         gcloud tasks create-http-task \
-          --header="authorization:${{secrets.BEARER_TOKEN_GITHUB}}" \
+          --header=${{secrets.BEARER_TOKEN_GITHUB}} \
           --queue=sandbox-project-deletion-triggers \
           --url=${{ secrets.SCHEDULER_URL }} \
           --location=us-west1 \
