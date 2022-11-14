@@ -72,7 +72,8 @@ jobs:
 
     - name: 'Create cleanup and deletion task on GCP Cloud Tasks scheduled exactly at expiry timestamp'
       run: |
-        PAYLOAD={'event_type':'gcp_nuke','client_payload':{'email':'${{inputs.USER_EMAIL}}','project':'${{env.PROJECT_NAME}}'}}
+        PAYLOAD={"event_type":"gcp_nuke","client_payload":{"email":"${{inputs.USER_EMAIL}}","project":"${{env.PROJECT_NAME}}"}}
+        echo $PAYLOAD
         gcloud tasks create-http-task \
           --header=${{secrets.BEARER_TOKEN_GITHUB}} \
           --queue=sandbox-project-deletion-triggers \
