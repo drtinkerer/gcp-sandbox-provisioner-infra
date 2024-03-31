@@ -48,8 +48,8 @@ jobs:
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider:  ${{ secrets.WIF_IDP_POOL }}
-        # service_account: ${{ secrets.RUNNER_SERVICE_ACCOUNT }}
-        project_id: ${{ secrets.SANDBOX_MASTER_PROJECT }}
+        service_account: ${{ secrets.RUNNER_SERVICE_ACCOUNT }}
+        # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT }}
         
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
