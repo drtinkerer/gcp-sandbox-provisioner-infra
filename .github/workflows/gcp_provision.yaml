@@ -48,7 +48,7 @@ jobs:
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider:  ${{ secrets.WIF_IDP_POOL }}
-        service_account: ${{ secrets.RUNNER_SERVICE_ACCOUNT }}
+        service_account:  "sandbox-master@sandbox-master-prj.iam.gserviceaccount.com"
         # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT }}
         
     - name: 'Set up Cloud SDK'
