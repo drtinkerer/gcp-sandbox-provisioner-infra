@@ -36,6 +36,9 @@ on:
 
 jobs:
   provisioning_gcp_project:
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
