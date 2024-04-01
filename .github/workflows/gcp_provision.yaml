@@ -83,7 +83,7 @@ jobs:
     #     timeout: 10000
 
     - name: "Invoke gcloud function"
-      run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
+      run: gcloud functions call gcp-sandbox-manager --gen2 --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
       
     # - name: 'Alert on Slack about project creation status'
     #   uses: act10ns/slack@v1
