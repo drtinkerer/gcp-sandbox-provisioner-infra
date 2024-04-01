@@ -45,9 +45,10 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v2.1.2'
       with:
-        token_format: 'access_token'
-        workload_identity_provider:  ${{ secrets.WIP_PROVIDER_ID }}
-        service_account:  ${{ secrets.MASTER_SERVICE_ACCOUNT_EMAIL }}
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+        # token_format: 'access_token'
+        # workload_identity_provider:  ${{ secrets.WIP_PROVIDER_ID }}
+        # service_account:  ${{ secrets.MASTER_SERVICE_ACCOUNT_EMAIL }}
         # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
         
     - name: 'Set up Cloud SDK'
