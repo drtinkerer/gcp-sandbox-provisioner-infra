@@ -64,17 +64,6 @@ jobs:
     - name: "test auth"
       run: gcloud auth list
 
-    - name: create-json
-      id: create-json
-      uses: jsdaniell/create-json@v1.2.3
-      with:
-        name: "payload.json"
-        json: '{"request_duration":"${{ inputs.DURATION  }}","event_type":"sandbox-provision"}'
-        dir: "/"
-
-    - name: "test cat"
-      run: cat /patload.json
-
     - name: "Invoke gcloud function"
       run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
       
