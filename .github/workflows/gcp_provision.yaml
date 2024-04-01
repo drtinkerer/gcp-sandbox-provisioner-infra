@@ -60,7 +60,10 @@ jobs:
       run: gcloud projects list
 
     - name: "test prj sa"
-      run: echo '${{ steps.auth.outputs.access_token }}'
+      run: echo 'TOKEN=${{ steps.auth.outputs.access_token }}' >> $GITHUB_ENV
+
+    - name: "test env sa"
+      run: echo ${{ env.TOKEN }}
 
 
     # - name: Invoke function over HTTP
