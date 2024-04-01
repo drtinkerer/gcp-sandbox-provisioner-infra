@@ -29,10 +29,6 @@ on:
       PURPOSE:
         description: "Short description"
         type: string
-      SUPPORT_TICKET:
-        description: "Paste the support ticket url here"
-        type: string
-        required: true
 
 jobs:
   provisioning_gcp_project:
@@ -64,9 +60,6 @@ jobs:
     - name: "test prj sa"
       run: gcloud functions list --project sandbox-master-prjc
 
-    - name: "fetch oauth token"
-      run: echo "OAUTH_TOKEN=$(gcloud auth print-identity-token)" >> $GITHUB_ENV
-
 
     # - name: Invoke function over HTTP
     #   uses: fjogeleit/http-request-action@v1
@@ -84,7 +77,7 @@ jobs:
         method: "POST"
         headers: '{"Content-Type":"application/json"}'
         body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
-        bearer-token: ${{ env.EMAIL_DOMAIN }}
+        bearer-token: ${{ steps.auth.outputs.access_token }}
 
     # - name: "Invoke gcloud function"
     #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
