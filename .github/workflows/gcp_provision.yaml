@@ -69,7 +69,8 @@ jobs:
       with:
         url: 'https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager'
         method: 'POST'
-        customHeaders: '{"Content-Type":"application/json","Authorization:bearer $(gcloud auth print-identity-token)"}'
+        customHeaders: '{"Content-Type":"application/json"}'
+        bearerToken: '$(gcloud auth print-identity-token)'
         data: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
 
     # - name: "Invoke gcloud function"
