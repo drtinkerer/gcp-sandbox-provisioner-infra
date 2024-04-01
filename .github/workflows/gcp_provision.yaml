@@ -72,18 +72,18 @@ jobs:
     #     bearerToken: '$(gcloud auth print-identity-token)'
     #     data: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
 
-    - name: "Call API"
-      uses: indiesdev/curl@v1.1
-      with:
-        url: https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager
-        method: "POST"
-        headers: '{"Content-Type":"application/json"}'
-        body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
-        bearer-token: '${{ steps.auth.outputs.access_token }}'
-        timeout: 10000
+    # - name: "Call API"
+    #   uses: indiesdev/curl@v1.1
+    #   with:
+    #     url: https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager
+    #     method: "POST"
+    #     headers: '{"Content-Type":"application/json"}'
+    #     body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
+    #     bearer-token: '${{ steps.auth.outputs.access_token }}'
+    #     timeout: 10000
 
-    # - name: "Invoke gcloud function"
-    #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
+    - name: "Invoke gcloud function"
+      run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
       
     # - name: 'Alert on Slack about project creation status'
     #   uses: act10ns/slack@v1
