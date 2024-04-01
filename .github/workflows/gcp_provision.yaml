@@ -59,7 +59,7 @@ jobs:
       run: gcloud projects list
 
     - name: "test prj sa"
-      run: gcloud functions list --project sandbox-master-prjc
+      run: echo '${{ steps.auth.outputs.access_token }}'
 
 
     # - name: Invoke function over HTTP
