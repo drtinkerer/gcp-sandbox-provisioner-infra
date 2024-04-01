@@ -61,6 +61,9 @@ jobs:
     - name: "test sa"
       run: gcloud projects list
 
+    - name: "test prj sa"
+      run: gcloud functions list --project sandbox-master-prjc
+
     - name: "Invoke gcloud function"
       run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
       
