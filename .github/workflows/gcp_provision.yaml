@@ -64,14 +64,19 @@ jobs:
     - name: "test prj sa"
       run: gcloud functions list --project sandbox-master-prjc
 
-    - name: Invoke function over HTTP
-      uses: fjogeleit/http-request-action@v1
-      with:
-        url: 'https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager'
-        method: 'POST'
-        customHeaders: '{"Content-Type":"application/json"}'
-        bearerToken: '$(gcloud auth print-identity-token)'
-        data: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
+    # - name: Invoke function over HTTP
+    #   uses: fjogeleit/http-request-action@v1
+    #   with:
+    #     url: 'https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager'
+    #     method: 'POST'
+    #     customHeaders: '{"Content-Type":"application/json"}'
+    #     bearerToken: '$(gcloud auth print-identity-token)'
+    #     data: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
+
+    - name: "Curl Invoke"
+      run: curl -m 70 -X POST https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager \
+      -H "Authorization: bearer $(gcloud auth print-identity-token)" \
+      -H "Content-Type: application/json" -d '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
 
     # - name: "Invoke gcloud function"
     #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
