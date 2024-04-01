@@ -80,7 +80,7 @@ jobs:
       with:
         url: https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager
         method: "POST"
-        headers: '{"Content-Type":"application/json","Authorization:"bearer ${{ steps.auth.outputs.access_token }}"}'
+        headers: '{"Content-Type":"application/json","authorization:"bearer ${{ steps.auth.outputs.access_token }}"}'
         body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
         # bearer-token: 'Bearer ${{ steps.auth.outputs.access_token }}'
 
