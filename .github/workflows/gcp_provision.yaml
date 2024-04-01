@@ -44,10 +44,11 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
     - uses: 'actions/checkout@v1'
+    
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
-        workload_identity_provider:  ${{ secrets.WIF_IDP_POOL }}
+        workload_identity_provider:  ${{ secrets.WIP_PROVIDER_ID }}
         service_account:  ${{ secrets.MASTER_SERVICE_ACCOUNT_EMAIL }}
         # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
         
