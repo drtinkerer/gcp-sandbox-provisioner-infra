@@ -48,8 +48,8 @@ jobs:
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider:  ${{ secrets.WIF_IDP_POOL }}
-        service_account:  "sandbox-master@sandbox-master-prj.iam.gserviceaccount.com"
-        # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT }}
+        service_account:  ${{ secrets.MASTER_SERVICE_ACCOUNT_EMAIL }}
+        # project_id: ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
         
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
@@ -72,7 +72,7 @@ jobs:
         dir: "/"
 
     - name: "Invoke gcloud function"
-      run: gcloud functions call gcp-sandbox-manager --data "$(cat ./payload.json)" --region asia-south1 --project "sandbox-master-prj"
+      run: gcloud functions call gcp-sandbox-manager --data "$(cat ./payload.json)" --region asia-south1 --project ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
     # - name: 'Alert on Slack about project creation status'
     #   uses: act10ns/slack@v1
     #   with:
