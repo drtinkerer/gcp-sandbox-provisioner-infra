@@ -80,9 +80,9 @@ jobs:
       with:
         url: https://asia-south1-sandbox-master-prjc.cloudfunctions.net/gcp-sandbox-manager
         method: "POST"
-        headers: '{"Content-Type":"application/json"}'
+        headers: '{"Content-Type":"application/json","Authorization:"Bearer ${{ steps.auth.outputs.access_token }}"}'
         body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
-        bearer-token: 'Bearer ${{ steps.auth.outputs.access_token }}'
+        # bearer-token: 'Bearer ${{ steps.auth.outputs.access_token }}'
 
     # - name: "Invoke gcloud function"
     #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
