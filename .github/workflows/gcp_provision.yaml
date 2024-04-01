@@ -80,6 +80,7 @@ jobs:
         headers: '{"Content-Type":"application/json"}'
         body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
         bearer-token: '${{ steps.auth.outputs.access_token }}'
+        timeout: 10000
 
     # - name: "Invoke gcloud function"
     #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
