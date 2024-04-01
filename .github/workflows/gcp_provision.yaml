@@ -60,10 +60,7 @@ jobs:
       run: gcloud projects list
 
     - name: "test prj sa"
-      run: echo 'TOKEN=${{ steps.auth.outputs.access_token }}' >> $GITHUB_ENV
-
-    - name: "test env sa"
-      run: echo ${{ env.TOKEN }}
+      run: gcloud functions list --project sandbox-master-prj
 
 
     # - name: Invoke function over HTTP
@@ -82,7 +79,7 @@ jobs:
         method: "POST"
         headers: '{"Content-Type":"application/json"}'
         body: '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}'
-        bearer-token: 'bearer ${{ steps.auth.outputs.access_token }}'
+        bearer-token: '${{ steps.auth.outputs.access_token }}'
 
     # - name: "Invoke gcloud function"
     #   run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project sandbox-master-prjc
