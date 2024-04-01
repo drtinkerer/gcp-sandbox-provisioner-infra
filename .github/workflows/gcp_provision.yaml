@@ -72,8 +72,11 @@ jobs:
         json: '{"request_duration":"${{ inputs.DURATION  }}","event_type":"sandbox-provision"}'
         dir: "/"
 
+    - name: "test cat"
+      run: cat /patload.json
+
     - name: "Invoke gcloud function"
-      run: gcloud functions call gcp-sandbox-manager --data "$(cat ./payload.json)" --region asia-south1 --project ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
+      run: gcloud functions call gcp-sandbox-manager --data "$(cat /payload.json)" --region asia-south1 --project ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
     # - name: 'Alert on Slack about project creation status'
     #   uses: act10ns/slack@v1
     #   with:
