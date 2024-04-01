@@ -64,6 +64,9 @@ jobs:
     - name: "test auth"
       run: gcloud auth list
 
+    - name: "test sa"
+      run: gcloud projects list
+
     - name: "Invoke gcloud function"
       run: gcloud functions call gcp-sandbox-manager --data '{"request_duration":"${{ inputs.DURATION }}","event_type":"sandbox-provision"}' --region asia-south1 --project ${{ secrets.SANDBOX_MASTER_PROJECT_ID }}
       
