@@ -1,0 +1,76 @@
+global:
+  github_repository: drtinkerer/gcp-sandbox
+  domain: "cloudpoet.in"
+  location: "asia-south1"
+  billing_account_name: "My Billing Account"
+
+folder:
+  master_display_name: "Sanbox Provisioner"
+  # By default, the master folder will get created on organization level
+  # Set this to false if you want sandbox-provisioner to be inside particular folder
+  org_as_parent: true
+  # Set master_parent_id only if sandbox needs to be created inside another folder.
+  # By default, master_parent_id is unused and org id from terrafrom data resource is used instead.
+  master_parent_id: "folders/1234567890"
+  # Create as many folders as needed below for different teams
+  team_folders:
+    - "Team-DevOps"
+    - "Team-Data"
+    - "Team-3"
+
+project:
+  master_display_name: "Sandbox Master"
+  prefix: "sandbox-master-project"
+  apis_to_enable:
+    - "compute.googleapis.com"
+    - "cloudfunctions.googleapis.com"
+    - "cloudtasks.googleapis.com"
+    - "cloudbuild.googleapis.com"
+    - "pubsub.googleapis.com"
+    - "logging.googleapis.com"
+    - "storage-api.googleapis.com"
+    - "run.googleapis.com"
+    - "artifactregistry.googleapis.com"
+    - "secretmanager.googleapis.com"
+    - "eventarc.googleapis.com"
+    - "iamcredentials.googleapis.com"
+    - "cloudresourcemanager.googleapis.com"
+
+service_account:
+  account_id: "sandbox-master"
+  display_name: "Sandbox Master"
+
+iam_roles:
+  org_level_role:
+    title: "Sandbox Provisioner Org Level Role"
+    role_id: "sandbox_provisioner_org"
+    permissions:
+      - "resourcemanager.projects.create"
+      - "resourcemanager.organizations.get"
+      - "resourcemanager.projects.get"
+      - "resourcemanager.folders.list"
+      - "resourcemanager.folders.get"
+      - "resourcemanager.projects.createBillingAssignment"
+      - "resourcemanager.projects.deleteBillingAssignment"
+      - "billing.resourceAssociations.create"
+      - "billing.resourceAssociations.delete"
+      - "billing.resourceAssociations.list"
+    excluded_permission:
+      - "iam.serviceAccounts.setIamPolicy"
+  project_level_role:
+    title: "Sandbox Provisioner Project Level Role"
+    role_id: "sandbox_provisioner_project"
+    permissions:
+      - "cloudfunctions.functions.get"
+      - "cloudfunctions.locations.list"
+      - "cloudfunctions.functions.list"
+      - "cloudfunctions.functions.invoke"
+      - "run.routes.invoke"
+      - "cloudtasks.locations.list"
+      - "cloudtasks.tasks.create"
+      - "iam.serviceAccounts.actAs"
+      - "iam.serviceAccounts.get"
+      - "iam.serviceAccounts.list"
+
+cloud_tasks:
+  queue_name: sandbox-project-deletion-tasks-queue

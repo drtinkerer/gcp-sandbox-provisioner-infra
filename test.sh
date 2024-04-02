@@ -1,0 +1,1 @@
+curl -m 70 -X POST https://asia-south1-sandbox-master-project-40.cloudfunctions.net/gcp-sandbox-manager -H "Authorization: bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" -d '{"event_type": "sandbox-provision"}'
