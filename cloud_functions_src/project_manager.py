@@ -1,32 +1,46 @@
 from google.cloud import resourcemanager_v3, billing_v1
+import os
 
-def create_project():
+project_parent = os.environ["ORG_ID"]
+
+def create_sandbox_project(user_email, team_name, requested_duration_hours):
     # Create a client
     client = resourcemanager_v3.ProjectsClient()
+    
+    current_timestamp = int(now.timestamp())
+    expiry_timestamp = current_timestamp + (requested_duration_hours * 3600)
+    generated_project_id = generate_project_id(user_email, current_timestamp)
 
-    project_request = resourcemanager_v3.Project(
-        display_name="Bhushan Test",
-        project_id="bhushan-test-1st", 
+    request_object = resourcemanager_v3.Project(
+        project_id=generated_project_id, 
         parent=org
         )
 
-    request = resourcemanager_v3.CreateProjectRequest(project=project_request)
+    project_request = resourcemanager_v3.CreateProjectRequest(project=request_object)
 
+    # Generate random project id from user email
+    
     # Make the request
-    operation = client.create_project(request=request)
-
-    print("Waiting for operation to complete...")
+    print("Waiting for project creation to complete...")
+    operation = client.create_project(request=project_request)
+    print("Project creation completed...")
+    print("Linking project to billing account...")
+    update_project_billing_info(user_email, generated_project_id)
 
     response = operation.result()
 
     # Handle the response
-    print(response)
+    return (response)
+
+def generate_project_id(user_email, current_timestamp):
+    extract_prefix = user_email.split("@")[0].replace(".","-")
+    return  f"extract_prefix-{current_timestamp}"
 
 
-def update_project_billing_info():
+def update_project_billing_info(user_email, project_id):
 
     project_id = "your-project-name"
-    billing_account_id = "your-billing-account-id"
+    billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
 
     # Create a client
     client = billing_v1.CloudBillingClient()

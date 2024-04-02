@@ -9,10 +9,9 @@ def create_deletion_task():
 
     now = datetime.now(UTC)
     delta = timedelta(hours=0.1)
-    later = now + delta
 
     expiry_timestamp = Timestamp()
-    expiry_timestamp.FromDatetime(later)
+    expiry_timestamp.FromDatetime(now + delta)
 
     cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
 

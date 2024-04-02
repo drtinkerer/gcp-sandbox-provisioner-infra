@@ -6,12 +6,10 @@ global:
 
 folder:
   master_display_name: "Sanbox Provisioner"
-  # By default, the master folder will get created on organization level
-  # Set this to false if you want sandbox-provisioner to be inside particular folder
-  org_as_parent: true
+  # By default, the master folder will get created on organization level.
   # Set master_parent_id only if sandbox needs to be created inside another folder.
-  # By default, master_parent_id is unused and org id from terrafrom data resource is used instead.
-  master_parent_id: "folders/1234567890"
+  # It should be of the format folders/123456789
+  parent_id: "default"
   # Create as many folders as needed below for different teams
   team_folders:
     - "Team-DevOps"

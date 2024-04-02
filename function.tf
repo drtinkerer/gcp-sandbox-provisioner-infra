@@ -25,7 +25,7 @@ module "cloud_functions2" {
   project_id        = google_project.sandbox-master-project.project_id
   function_location = local.config.global.location
   runtime           = "python311"
-  entrypoint        = "multiply"
+  entrypoint        = "handble_sandbox_request"
   # members = {
   #   invokers = [
   #     "${google_service_account.sandbox-service-account.member}"
@@ -51,3 +51,12 @@ module "cloud_functions2" {
   }
 
 }
+
+
+resource "google_cloudfunctions2_function_iam_member" "invokers" {
+      cloud_function = module.cloud_functions2.function_name
+      location       = local.config.global.location
+      member         = google_service_account.sandbox-service-account.member
+      project        = google_project.sandbox-master-project.project_id
+      role           = "roles/cloudfunctions.invoker"
+    }

@@ -22,6 +22,6 @@ output "SERVICE_ACCOUNT_EMAIL" {
   value = google_service_account.sandbox-service-account.email
 }
 
-output "GITHUB_IDP_POOL_ID" {
-  value = module.gh_oidc.provider_name
-}
+# output "GITHUB_IDP_POOL_ID" {
+#   value = module.gh_oidc.provider_name
+# }
