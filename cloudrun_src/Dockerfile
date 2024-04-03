@@ -1,7 +1,9 @@
-FROM python:3.8.6-buster
+FROM python:slim-bookworm
 
 COPY main.py main.py
 COPY requirements.txt requirements.txt
+
+USER 65532
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
