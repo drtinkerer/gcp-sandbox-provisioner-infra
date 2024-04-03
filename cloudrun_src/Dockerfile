@@ -1,12 +1,13 @@
-FROM python:slim-bookworm
-USER root
-COPY main.py main.py
-COPY requirements.txt requirements.txt
+FROM python:3.9
 
+WORKDIR /code
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+COPY ./requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY ./app /code/app
+
 ENV PORT=8080
-USER 1000
-# the --port $PORT is added here so that we can run this on Google Cloud Run
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "$PORT"]
