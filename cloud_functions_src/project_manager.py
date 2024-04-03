@@ -1,40 +1,43 @@
-from google.cloud import resourcemanager_v3, billing_v1
 import os
+from google.cloud import resourcemanager_v3, billing_v1
+from datetime import timedelta, datetime, UTC
 
-project_parent = os.environ["ORG_ID"]
 
-def create_sandbox_project(user_email, team_name, requested_duration_hours):
+def create_sandbox_project(user_email, folder_id, requested_duration_hours):
     # Create a client
     client = resourcemanager_v3.ProjectsClient()
-    
-    current_timestamp = int(now.timestamp())
+
+    current_timestamp = int(datetime.now(UTC).timestamp())
     expiry_timestamp = current_timestamp + (requested_duration_hours * 3600)
-    generated_project_id = generate_project_id(user_email, current_timestamp)
-
-    request_object = resourcemanager_v3.Project(
-        project_id=generated_project_id, 
-        parent=org
-        )
-
-    project_request = resourcemanager_v3.CreateProjectRequest(project=request_object)
 
     # Generate random project id from user email
-    
+    project_id = generate_project_id(user_email, current_timestamp)
+
+    request_object = resourcemanager_v3.Project(
+        project_id=project_id,
+        parent=folder_id
+    )
+
+    project_request = resourcemanager_v3.CreateProjectRequest(
+        project=request_object)
+
     # Make the request
     print("Waiting for project creation to complete...")
     operation = client.create_project(request=project_request)
-    print("Project creation completed...")
-    print("Linking project to billing account...")
-    update_project_billing_info(user_email, generated_project_id)
-
+    print("Project creation completed.")
+    print(f"Linking project {project_id} to billing account...")
+    update_project_billing_info(user_email, project_id)
+    print(f"Successfuly linked project {project_id} to billing account.")
     response = operation.result()
+    print(response)
 
     # Handle the response
     return (response)
 
+
 def generate_project_id(user_email, current_timestamp):
-    extract_prefix = user_email.split("@")[0].replace(".","-")
-    return  f"extract_prefix-{current_timestamp}"
+    extract_prefix = user_email.split("@")[0].replace(".", "-")
+    return f"extract_prefix-{current_timestamp}"
 
 
 def update_project_billing_info(user_email, project_id):
@@ -45,7 +48,7 @@ def update_project_billing_info(user_email, project_id):
     # Create a client
     client = billing_v1.CloudBillingClient()
     project_billing_info = billing_v1.ProjectBillingInfo(
-        billing_account_name = f"billingAccounts/{billing_account_id}"
+        billing_account_name=f"billingAccounts/{billing_account_id}"
     )
     # Initialize request argument(s)
     request = billing_v1.UpdateProjectBillingInfoRequest(
@@ -65,7 +68,7 @@ def delete_project():
 
     # project_request = resourcemanager_v3.Project(
     #     display_name="Bhushan Test",
-    #     project_id="bhushan-test-1st", 
+    #     project_id="bhushan-test-1st",
     #     parent=org
     #     )
 
