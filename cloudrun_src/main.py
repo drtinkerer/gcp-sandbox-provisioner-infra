@@ -34,7 +34,7 @@ def create_sandbox_project():
 
     request_object = resourcemanager_v3.Project(
         project_id=project_id,
-        parent="folder/880541287850"
+        parent="folders/880541287850"
     )
 
     project_request = resourcemanager_v3.CreateProjectRequest(
