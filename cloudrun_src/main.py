@@ -12,6 +12,7 @@ def index():
 
 @app.get('/multiply')
 def multiply(a,b):
+    create_sandbox_project()
     return{'result': int(a)*int(b)}
 
 @app.get('/substract')
@@ -24,7 +25,7 @@ def multiply(a,b):
     return{'result': int(a)+int(b)}
 
 
-def create_sandbox_project(user_email, folder_id, requested_duration_hours):
+def create_sandbox_project():
     # Create a client
     client = resourcemanager_v3.ProjectsClient()
 
@@ -33,7 +34,7 @@ def create_sandbox_project(user_email, folder_id, requested_duration_hours):
 
     request_object = resourcemanager_v3.Project(
         project_id=project_id,
-        parent="291146829076"
+        parent="folder/880541287850"
     )
 
     project_request = resourcemanager_v3.CreateProjectRequest(
