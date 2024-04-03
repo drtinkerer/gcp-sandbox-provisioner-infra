@@ -53,8 +53,7 @@ iam_roles:
       - "billing.resourceAssociations.create"
       - "billing.resourceAssociations.delete"
       - "billing.resourceAssociations.list"
-    excluded_permission:
-      - "iam.serviceAccounts.setIamPolicy"
+
   project_level_role:
     title: "Sandbox Provisioner Project Level Role"
     role_id: "sandbox_provisioner_project"
@@ -69,6 +68,11 @@ iam_roles:
       - "iam.serviceAccounts.actAs"
       - "iam.serviceAccounts.get"
       - "iam.serviceAccounts.list"
+      - "iam.serviceAccounts.getAccessToken"
+      - "iam.serviceAccounts.getOpenIdToken"
+      - "iam.serviceAccounts.signBlob"
+      - "iam.serviceAccounts.signJwt"
+      - "artifactregistry.repositories.uploadArtifacts"
 
 cloud_tasks:
   queue_name: sandbox-project-deletion-tasks-queue
