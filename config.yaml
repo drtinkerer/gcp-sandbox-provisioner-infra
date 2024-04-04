@@ -76,3 +76,8 @@ iam_roles:
 
 cloud_tasks:
   queue_name: sandbox-project-deletion-tasks-queue
+
+cloud_run:
+  service_name: gcp-sandbox-provisioner
+  container_image: drtinkerer/gcp-sandbox-provisioner:latest
+  swagger_docs_endpoint: /docs

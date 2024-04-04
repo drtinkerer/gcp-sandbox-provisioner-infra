@@ -6,6 +6,19 @@
 #   format        = "DOCKER"
 # }
 
+module "cloud_run" {
+  source     = "GoogleCloudPlatform/cloud-run/google"
+  version    = "~> 0.10.0"
+  depends_on = [google_service_account.sandbox-service-account]
+
+  # Required variables
+  service_name          = local.config.cloud_run.service_name
+  project_id            = google_project.sandbox-master-project.project_id
+  location              = local.config.global.location
+  image                 = local.config.cloud_run.container_image
+  service_account_email = google_service_account.sandbox-service-account.email
+  members               = [google_service_account.sandbox-service-account.member]
+}
 
 # terraform {
 #   required_providers {
