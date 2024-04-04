@@ -3,6 +3,9 @@ global:
   domain: "cloudpoet.in"
   location: "asia-south1"
   billing_account_name: "My Billing Account"
+  authorized_domains:
+    - "cloudpoet.in"
+    - "example.com"
 
 folder:
   master_display_name: "Sanbox Provisioner"

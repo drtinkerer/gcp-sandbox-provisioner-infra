@@ -8,8 +8,13 @@
 
 module "cloud_run" {
   source     = "GoogleCloudPlatform/cloud-run/google"
+
+  depends_on = [
+    google_service_account.sandbox-service-account,
+    module.project-services
+  ]
+
   version    = "~> 0.10.0"
-  depends_on = [google_service_account.sandbox-service-account]
 
   # Required variables
   service_name          = local.config.cloud_run.service_name
@@ -19,12 +24,7 @@ module "cloud_run" {
   service_account_email = google_service_account.sandbox-service-account.email
   members               = [google_service_account.sandbox-service-account.member]
   container_concurrency = 5
-  env_vars = [
-    {
-      name : "AUTHORIZED_DOMAIN",
-      value : local.config.global.domain
-    }
-  ]
+  env_vars = local.combined_cloudrun_env_vars
 }
 
 # terraform {
