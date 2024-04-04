@@ -18,6 +18,13 @@ module "cloud_run" {
   image                 = local.config.cloud_run.container_image
   service_account_email = google_service_account.sandbox-service-account.email
   members               = [google_service_account.sandbox-service-account.member]
+  container_concurrency = 5
+  env_vars = [
+    {
+      name : "AUTHORIZED_DOMAIN",
+      value : local.config.global.domain
+    }
+  ]
 }
 
 # terraform {
