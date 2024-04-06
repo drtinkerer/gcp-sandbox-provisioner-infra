@@ -35,15 +35,15 @@
 #   service_config = {
 #     max_instance_count = 3
 #     min_instance_count = 1
-#     runtime_env_variables = merge(module.sandbox-teams-folders.ids, {
-#       "ORG_ID"                        = data.google_organization.org.org_id,
-#       "AUTHORIZED_DOMAIN"             = local.config.global.domain
-#       "BILLING_ACCOUNT_ID"            = data.google_billing_account.account.id
-#       "LOCATION"                      = local.config.global.location
-#       "CLOUD_TASKS_DELETION_QUEUE_ID" = google_cloud_tasks_queue.deletion_tasks_queue.id
-#       "SERVICE_ACCOUNT_EMAIL"         = google_service_account.sandbox-service-account.email
-#     #   "CLOUD_FUNCTION_URI_GEN_1"      = local.cloud_function_uri
-#     })
+    # runtime_env_variables = merge(module.sandbox-teams-folders.ids, {
+    #   "ORG_ID"                        = data.google_organization.org.org_id,
+    #   "AUTHORIZED_DOMAIN"             = local.config.global.domain
+    #   "BILLING_ACCOUNT_ID"            = data.google_billing_account.account.id
+    #   "LOCATION"                      = local.config.global.location
+    #   "CLOUD_TASKS_DELETION_QUEUE_ID" = google_cloud_tasks_queue.deletion_tasks_queue.id
+    #   "SERVICE_ACCOUNT_EMAIL"         = google_service_account.sandbox-service-account.email
+    # #   "CLOUD_FUNCTION_URI_GEN_1"      = local.cloud_function_uri
+    # })
 #   }
 
 # }

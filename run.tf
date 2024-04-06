@@ -1,73 +1,91 @@
-# resource "google_artifact_registry_repository" "my-repo" {
-#   project       = google_project.sandbox-master-project.project_id
-#   location      = local.config.global.location
-#   repository_id = "gcp-sandbox-provisioner"
-#   description   = "example docker repository"
-#   format        = "DOCKER"
+# module "cloud_run" {
+#   source     = "GoogleCloudPlatform/cloud-run/google"
+
+#   depends_on = [
+#     google_service_account.sandbox-service-account,
+#     module.project-services
+#   ]
+
+#   version    = "~> 0.10.0"
+
+#   # Required variables
+#   service_name          = local.config.cloud_run.service_name
+#   project_id            = google_project.sandbox-master-project.project_id
+#   location              = local.config.global.location
+#   image                 = local.config.cloud_run.container_image
+#   service_account_email = google_service_account.sandbox-service-account.email
+#   members               = [google_service_account.sandbox-service-account.member]
+#   container_concurrency = 5
+#   env_vars = local.combined_cloudrun_env_vars
 # }
 
-module "cloud_run" {
-  source     = "GoogleCloudPlatform/cloud-run/google"
+resource "google_storage_bucket" "bucket" {
+  name     = "cloud-run-state-${google_project.sandbox-master-project.project_id}"
+  location = local.config.global.location
+  project = google_project.sandbox-master-project.project_id
+}
+
+
+resource "google_cloud_run_v2_service" "default" {
 
   depends_on = [
     google_service_account.sandbox-service-account,
-    module.project-services
+    module.project-services,
+    google_storage_bucket.bucket
   ]
 
-  version    = "~> 0.10.0"
+  name         = local.config.cloud_run.service_name
+  project      = google_project.sandbox-master-project.project_id
+  location     = local.config.global.location
+  launch_stage = "BETA"
 
-  # Required variables
-  service_name          = local.config.cloud_run.service_name
-  project_id            = google_project.sandbox-master-project.project_id
-  location              = local.config.global.location
-  image                 = local.config.cloud_run.container_image
-  service_account_email = google_service_account.sandbox-service-account.email
-  members               = [google_service_account.sandbox-service-account.member]
-  container_concurrency = 5
-  env_vars = local.combined_cloudrun_env_vars
+  template {
+    execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
+    # service_account       = google_service_account.sandbox-service-account.email
+
+    containers {
+      image = local.config.cloud_run.container_image
+      env {
+        name  = "BILLING_ACCOUNT_ID"
+        value = data.google_billing_account.account.id
+      }
+      env {
+        name = "AUTHORIZED_TEAM_FOLDER_NAMES"
+        value = join(",", module.sandbox-teams-folders.names_list)
+      }
+      env {
+        name = "AUTHORIZED_DOMAIN_NAMES"
+        value = join(",", local.config.global.authorized_domains)
+      }
+      env {
+        name = "LOCATION"
+        value = local.config.global.location
+      }
+      env {
+        name = "ISD"
+        value = jsonencode(module.sandbox-teams-folders.ids)
+      }
+      #   env = merge(module.sandbox-teams-folders.ids, {
+      #   "ORG_ID"                        = data.google_organization.org.org_id,
+      #   "AUTHORIZED_DOMAIN"             = local.config.global.domain
+      #   "BILLING_ACCOUNT_ID"            = data.google_billing_account.account.id
+      #   "LOCATION"                      = local.config.global.location
+      #   "CLOUD_TASKS_DELETION_QUEUE_ID" = google_cloud_tasks_queue.deletion_tasks_queue.id
+      #   "SERVICE_ACCOUNT_EMAIL"         = google_service_account.sandbox-service-account.email
+      # })
+
+      volume_mounts {
+        name       = "mounted_bucket"
+        mount_path = "/var/www"
+      }
+    }
+
+    volumes {
+      name = "mounted_bucket"
+      gcs {
+        bucket    = google_storage_bucket.bucket.name
+        read_only = false
+      }
+    }
+  }
 }
-
-# terraform {
-#   required_providers {
-#     docker = {
-#       source  = "kreuzwerker/docker"
-#       version = "3.0.2"
-#     }
-#   }
-# }
-
-
-# data "google_service_account_access_token" "repo" {
-#   depends_on             = [google_project_iam_custom_role.project-level-custom-role]
-#   provider               = google
-#   target_service_account = google_service_account.sandbox-service-account.email
-#   scopes                 = ["userinfo-email", "cloud-platform"]
-# }
-
-# provider "docker" {
-#   registry_auth {
-#     address  = "${local.config.global.location}-docker.pkg.dev"
-#     username = "oauth2accesstoken"
-#     password = data.google_service_account_access_token.repo.access_token
-#   }
-# }
-
-# resource "docker_registry_image" "gar_image" {
-#   name     = "${local.config.global.location}-docker.pkg.dev/${google_project.sandbox-master-project.project_id}/${google_artifact_registry_repository.my-repo}/gar-image"
-
-#   build {
-#     context = "."
-#   }
-# }
-
-# resource "docker_registry_image" "helloworld" {
-#   name          = docker_image.image.name
-#   keep_remotely = true
-# }
-
-# resource "docker_image" "image" {
-#   name     = "${local.config.global.location}-docker.pkg.dev/${google_project.sandbox-master-project.project_id}/${google_artifact_registry_repository.my-repo.repository_id}/gar-image"
-#   build {
-#     context = "${path.cwd}/cloudrun_src"
-#   }
-# }

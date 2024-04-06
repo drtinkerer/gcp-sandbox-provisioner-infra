@@ -76,11 +76,12 @@ iam_roles:
       - "iam.serviceAccounts.signBlob"
       - "iam.serviceAccounts.signJwt"
       - "artifactregistry.repositories.uploadArtifacts"
+      - "storage.objects.create"
 
 cloud_tasks:
   queue_name: sandbox-project-deletion-tasks-queue
 
 cloud_run:
   service_name: gcp-sandbox-provisioner
-  container_image: drtinkerer/gcp-sandbox-provisioner:latest
+  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.0
   swagger_docs_endpoint: /docs
