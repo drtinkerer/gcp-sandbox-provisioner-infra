@@ -22,7 +22,13 @@
 resource "google_storage_bucket" "bucket" {
   name     = "cloud-run-state-${google_project.sandbox-master-project.project_id}"
   location = local.config.global.location
-  project = google_project.sandbox-master-project.project_id
+  project  = google_project.sandbox-master-project.project_id
+}
+
+resource "google_storage_bucket_iam_member" "bucket_A" {
+  bucket     = google_storage_bucket.bucket.name
+  role       = "roles/storage.objectAdmin"
+  member     = google_service_account.sandbox-service-account.member
 }
 
 
@@ -41,7 +47,7 @@ resource "google_cloud_run_v2_service" "default" {
 
   template {
     execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
-    # service_account       = google_service_account.sandbox-service-account.email
+    service_account       = google_service_account.sandbox-service-account.email
 
     containers {
       image = local.config.cloud_run.container_image
@@ -50,29 +56,37 @@ resource "google_cloud_run_v2_service" "default" {
         value = data.google_billing_account.account.id
       }
       env {
-        name = "AUTHORIZED_TEAM_FOLDER_NAMES"
-        value = join(",", module.sandbox-teams-folders.names_list)
-      }
-      env {
-        name = "AUTHORIZED_DOMAIN_NAMES"
+        name  = "AUTHORIZED_DOMAIN_NAMES"
         value = join(",", local.config.global.authorized_domains)
       }
       env {
-        name = "LOCATION"
+        name  = "LOCATION"
         value = local.config.global.location
       }
       env {
-        name = "ISD"
+        name  = "AUTHORIZED_TEAM_FOLDERS"
         value = jsonencode(module.sandbox-teams-folders.ids)
       }
-      #   env = merge(module.sandbox-teams-folders.ids, {
-      #   "ORG_ID"                        = data.google_organization.org.org_id,
-      #   "AUTHORIZED_DOMAIN"             = local.config.global.domain
-      #   "BILLING_ACCOUNT_ID"            = data.google_billing_account.account.id
-      #   "LOCATION"                      = local.config.global.location
-      #   "CLOUD_TASKS_DELETION_QUEUE_ID" = google_cloud_tasks_queue.deletion_tasks_queue.id
-      #   "SERVICE_ACCOUNT_EMAIL"         = google_service_account.sandbox-service-account.email
-      # })
+      env {
+        name  = "MAX_ALLOWED_PROJECTS_PER_USER"
+        value = local.config.global.max_allowed_projects_per_user
+      }
+      env {
+        name = "SERVICE_ACCOUNT_EMAIL"
+        value = google_service_account.sandbox-service-account.email
+      }
+      env {
+        name = "ORGANIZATION_ID"
+        value = data.google_organization.org.org_id
+      }
+      env {
+        name = "CLOUD_TASKS_DELETION_QUEUE_ID"
+        value = google_cloud_tasks_queue.deletion_tasks_queue.id
+      }
+      env {
+        name = "CLOUDRUN_SERVICE_ID"
+        value = local.cloudrun_service_id
+      }
 
       volume_mounts {
         name       = "mounted_bucket"

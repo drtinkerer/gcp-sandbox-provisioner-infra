@@ -13,23 +13,24 @@ def create_sandbox_project(user_email, folder_id, requested_duration_hours):
     # Generate random project id from user email
     project_id = generate_project_id(user_email, current_timestamp)
 
-    request_object = resourcemanager_v3.Project(
-        project_id=project_id,
-        parent=folder_id
-    )
-
     project_request = resourcemanager_v3.CreateProjectRequest(
-        project=request_object)
+        project=resourcemanager_v3.Project(
+            project_id=project_id,
+            parent=folder_id,
+            lables=[("SandboxUser", user_email)]
+        )
+    )
 
     # Make the request
     print("Waiting for project creation to complete...")
     operation = client.create_project(request=project_request)
     print("Project creation completed.")
     print(f"Linking project {project_id} to billing account...")
-    update_project_billing_info(user_email, project_id)
+    update_project_billing_info(project_id)
     print(f"Successfuly linked project {project_id} to billing account.")
     response = operation.result()
-    print(response)
+    print("Creating deletion task on Google Cloud Tasks queue...")
+    create_deletion_task(project_id, expiry_timestamp)
 
     # Handle the response
     return (response)
@@ -40,9 +41,8 @@ def generate_project_id(user_email, current_timestamp):
     return f"extract_prefix-{current_timestamp}"
 
 
-def update_project_billing_info(user_email, project_id):
+def update_project_billing_info(project_id):
 
-    project_id = "your-project-name"
     billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
 
     # Create a client

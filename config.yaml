@@ -6,6 +6,7 @@ global:
   authorized_domains:
     - "cloudpoet.in"
     - "example.com"
+  max_allowed_projects_per_user: 1
 
 folder:
   master_display_name: "Sanbox Provisioner"
@@ -18,24 +19,25 @@ folder:
     - "Team-DevOps"
     - "Team-Data"
     - "Team-3"
+    - "Team-4"
 
 project:
   master_display_name: "Sandbox Master"
   prefix: "sandbox-master-project"
   apis_to_enable:
-    - "compute.googleapis.com"
-    - "cloudfunctions.googleapis.com"
+    # - "compute.googleapis.com"
+    # - "cloudfunctions.googleapis.com"
     - "cloudtasks.googleapis.com"
-    - "cloudbuild.googleapis.com"
-    - "pubsub.googleapis.com"
-    - "logging.googleapis.com"
-    - "storage-api.googleapis.com"
+    # - "cloudbuild.googleapis.com"
+    # - "pubsub.googleapis.com"
+    # - "logging.googleapis.com"
+    # - "storage-api.googleapis.com"
     - "run.googleapis.com"
-    - "artifactregistry.googleapis.com"
-    - "secretmanager.googleapis.com"
-    - "eventarc.googleapis.com"
-    - "iamcredentials.googleapis.com"
-    - "cloudresourcemanager.googleapis.com"
+    # - "artifactregistry.googleapis.com"
+    # - "secretmanager.googleapis.com"
+    # - "eventarc.googleapis.com"
+    # - "iamcredentials.googleapis.com"
+    # - "cloudresourcemanager.googleapis.com"
 
 service_account:
   account_id: "sandbox-master"
@@ -61,13 +63,14 @@ iam_roles:
     title: "Sandbox Provisioner Project Level Role"
     role_id: "sandbox_provisioner_project"
     permissions:
-      - "cloudfunctions.functions.get"
-      - "cloudfunctions.locations.list"
-      - "cloudfunctions.functions.list"
-      - "cloudfunctions.functions.invoke"
+      # - "cloudfunctions.functions.get"
+      # - "cloudfunctions.locations.list"
+      # - "cloudfunctions.functions.list"
+      # - "cloudfunctions.functions.invoke"
       - "run.routes.invoke"
       - "cloudtasks.locations.list"
       - "cloudtasks.tasks.create"
+      - "cloudtasks.tasks.delete"
       - "iam.serviceAccounts.actAs"
       - "iam.serviceAccounts.get"
       - "iam.serviceAccounts.list"
@@ -75,8 +78,12 @@ iam_roles:
       - "iam.serviceAccounts.getOpenIdToken"
       - "iam.serviceAccounts.signBlob"
       - "iam.serviceAccounts.signJwt"
-      - "artifactregistry.repositories.uploadArtifacts"
-      - "storage.objects.create"
+      # - "artifactregistry.repositories.uploadArtifacts"
+      # - "storage.managedFolders.get"
+      # - "storage.managedFolders.list"
+      # - "storage.objects.get"
+      # - "storage.objects.list"
+      # - "storage.objects.create"
 
 cloud_tasks:
   queue_name: sandbox-project-deletion-tasks-queue

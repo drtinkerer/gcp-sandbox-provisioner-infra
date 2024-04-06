@@ -4,10 +4,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr
 from google.cloud import resourcemanager_v3, billing_v1
 from datetime import timedelta, datetime, UTC
-# import project_manager
-from app.mod import project_manager
-# from project_manager import create_sandbox_project, update_project_billing_info
-
+# from cloudrun_src.app import project_manager
+from app.project_manager import create_sandbox_project, update_project_billing_info
 
 app = FastAPI()
 
@@ -16,12 +14,11 @@ class SandboxCreate(BaseModel):
     team_name: str = "Team-DevOps"
     requested_duration_hours: int = 2
 
-authorized_domains = ["cloudpoet.in", "example.com"]
-# team_names = os.environ["TEAM_NAMES"]
-# team_names = json.loads('["Team-DevOps", "Team-3"]')
 
-team_names = ["Team-DevOps", "Team-3"]
-    
+authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
+team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
+team_names = list(team_folders.keys())
+
 
 @app.post("/create_sandbox/")
 async def create_user(user_data: SandboxCreate):
@@ -42,20 +39,18 @@ async def create_user(user_data: SandboxCreate):
         # folder_id = os.environ[team_name]
         raise HTTPException(status_code=400, detail=f"ERROR 400: Provided team_name {team_name} is invalid. Required value must be one in {team_names}")
 
+
+    # Check active sandboxes
+
     print(f"Handling sandbox project creation event for {user_email}")
-    # response = create_sandbox_project(user_email, team_name, requested_duration_hours)
-    
+    response = create_sandbox_project(user_email, team_name, requested_duration_hours)
+    print(response)
     return {
         "msg": "we got data succesfully",
         "user_email": user_email,
         "team_name": team_name,
         # "project_creation_response": response
     }
-
-@app.get('/')
-def index():
-    return{'value': 'Go to https://math-api-cd-4zunylksjq-uc.a.run.app/docs' }
-#this is a change
 
 
 @app.get('/get_env')
@@ -65,12 +60,3 @@ def index():
 @app.get('/multiply')
 def multiply(a,b):
     return{'result': int(a)*int(b)}
-
-@app.get('/substract')
-def substract(a,b):
-
-    return{'result': int(a)-int(b)}
-
-@app.get('/sum')
-def multiply(a,b):
-    return{'result': int(a)+int(b)}
