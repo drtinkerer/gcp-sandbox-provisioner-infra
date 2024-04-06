@@ -19,14 +19,13 @@ def get_cloud_run_service_url():
     return response.uri
 
 
-def create_deletion_task(project_id):
+def create_deletion_task(project_id, request_time, requested_duration_hours):
     client = tasks_v2.CloudTasksClient()
 
-    now = datetime.now(UTC)
-    delta = timedelta(hours=0.1)
+    delta = timedelta(hours=requested_duration_hours)
 
     expiry_timestamp = Timestamp()
-    expiry_timestamp.FromDatetime(now + delta)
+    expiry_timestamp.FromDatetime(request_time + delta)
 
     cloud_run_service_url = get_cloud_run_service_url(cloud_run_service_id)
 
