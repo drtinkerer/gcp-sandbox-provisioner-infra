@@ -28,6 +28,7 @@ async def create_user(user_data: SandboxCreate):
     user_email = user_data.user_email
     team_name = user_data.team_name
     user_email_domain = user_email.split("@")[1]
+    folder_id = team_folders[team_name]
     requested_duration_hours = user_data.requested_duration_hours
 
     # event_type = user_data.event_type
@@ -43,7 +44,7 @@ async def create_user(user_data: SandboxCreate):
     # Check active sandboxes
 
     print(f"Handling sandbox project creation event for {user_email}")
-    response = create_sandbox_project(user_email, team_name, requested_duration_hours)
+    response = create_sandbox_project(user_email, folder_id, requested_duration_hours)
     print(response)
     return {
         "msg": "we got data succesfully",
