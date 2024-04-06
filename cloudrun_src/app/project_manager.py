@@ -3,6 +3,7 @@ from google.cloud import resourcemanager_v3, billing_v1
 from datetime import timedelta, datetime, UTC
 from app.tasks import create_deletion_task
 
+
 def create_sandbox_project(user_email, folder_id, requested_duration_hours):
     # Create a client
     client = resourcemanager_v3.ProjectsClient()
@@ -13,13 +14,14 @@ def create_sandbox_project(user_email, folder_id, requested_duration_hours):
     # Generate random project id from user email
     project_id = generate_project_id(user_email, current_timestamp)
 
-    request_object = resourcemanager_v3.Project(
-        project_id=project_id,
-        parent=folder_id
-    )
-
     project_request = resourcemanager_v3.CreateProjectRequest(
-        project=request_object)
+        project=resourcemanager_v3.Project(
+            project_id=project_id,
+            parent=folder_id,
+            display_name=project_id,
+            lables=[("SandboxRequestedBy", user_email)]
+        )
+    )
 
     # Make the request
     print("Waiting for project creation to complete...")
@@ -29,7 +31,8 @@ def create_sandbox_project(user_email, folder_id, requested_duration_hours):
     update_project_billing_info(user_email, project_id)
     print(f"Successfuly linked project {project_id} to billing account.")
     response = operation.result()
-    print(f"Creating deletion task for Project {project_id} on Google Cloud Tasks queue...")
+    print(f"Creating deletion task for Project {
+          project_id} on Google Cloud Tasks queue...")
     create_deletion_task(project_id, expiry_timestamp)
 
     # Handle the response
