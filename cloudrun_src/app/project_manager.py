@@ -19,7 +19,7 @@ def create_sandbox_project(user_email, folder_id, requested_duration_hours):
             project_id=project_id,
             parent=folder_id,
             display_name=project_id,
-            lables=[("SandboxRequestedBy", user_email)]
+            labels=[("SandboxRequestedBy", user_email)]
         )
     )
 

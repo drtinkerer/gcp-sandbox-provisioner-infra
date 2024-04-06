@@ -78,7 +78,7 @@ iam_roles:
       - "iam.serviceAccounts.getOpenIdToken"
       - "iam.serviceAccounts.signBlob"
       - "iam.serviceAccounts.signJwt"
-      - "cloudbilling.googleapis.com"
+      # - "cloudbilling.googleapis.com"
       # - "artifactregistry.repositories.uploadArtifacts"
       # - "storage.managedFolders.get"
       # - "storage.managedFolders.list"
@@ -91,5 +91,5 @@ cloud_tasks:
 
 cloud_run:
   service_name: gcp-sandbox-provisioner
-  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.3
+  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.5
   swagger_docs_endpoint: /docs
