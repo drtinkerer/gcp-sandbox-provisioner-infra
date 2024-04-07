@@ -7,7 +7,7 @@ cloud_run_service_id = os.environ["CLOUDRUN_SERVICE_ID"]
 master_service_account_email = os.environ["SERVICE_ACCOUNT_EMAIL"]
 
 
-def get_cloud_run_service_url():
+def get_cloud_run_service_url(cloud_run_service_id):
     client = run_v2.ServicesClient()
 
     request = run_v2.GetServiceRequest(
