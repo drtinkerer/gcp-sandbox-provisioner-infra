@@ -112,7 +112,7 @@ def delete_sandbox(user_data: SandboxExtend):
     task_id = f"{cloud_tasks_queue_id}/tasks/{project_id}"
     
     new_expiry_timestamp_proto = Timestamp()
-
+    print(task_id)
     current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
     new_expiry_timestamp_proto.FromSeconds(current_expiry_timestamp + (3600 * extend_by_hours))
 

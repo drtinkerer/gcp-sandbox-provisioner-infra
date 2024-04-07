@@ -3,7 +3,8 @@ resource "google_cloud_tasks_queue" "deletion_tasks_queue" {
     module.project-services,
     google_service_account.sandbox-service-account,
     google_project_iam_custom_role.project-level-custom-role,
-    google_project_iam_member.project_level_iam_binding
+    google_project_iam_member.project_level_iam_binding,
+    google_storage_bucket.bucket
   ]
   name     = local.config.cloud_tasks.queue_name
   location = local.config.global.location
@@ -26,17 +27,6 @@ resource "google_cloud_tasks_queue" "deletion_tasks_queue" {
     sampling_ratio = 1
   }
 }
-
-# resource "google_cloud_tasks_queue_iam_binding" "deletion_tasks_queue_binding" {
-#   project  = google_cloud_tasks_queue.deletion_tasks_queue.project
-#   location = google_cloud_tasks_queue.deletion_tasks_queue.location
-#   name     = google_cloud_tasks_queue.deletion_tasks_queue.name
-#   role     = "roles/iam.serviceAccountUser"
-#   members = [
-#     google_service_account.sandbox-service-account.member
-#   ]
-# }
-
 
 
 data "google_iam_policy" "service_account_user" {

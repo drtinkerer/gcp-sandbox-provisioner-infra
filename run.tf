@@ -20,6 +20,9 @@
 # }
 
 resource "google_storage_bucket" "bucket" {
+  depends_on = [
+    module.project-services
+  ]
   name     = "cloud-run-state-${google_project.sandbox-master-project.project_id}"
   location = local.config.global.location
   project  = google_project.sandbox-master-project.project_id
