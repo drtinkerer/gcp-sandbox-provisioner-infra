@@ -38,6 +38,7 @@ def create_deletion_task(project_id, expiry_timestamp):
         schedule_time=expiry_timestamp
     )
 
+
     # Initialize request argument(s)
     request = tasks_v2.CreateTaskRequest(
         parent=cloud_tasks_queue_id,

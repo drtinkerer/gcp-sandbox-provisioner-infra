@@ -30,4 +30,4 @@ jobs:
           context: "{{defaultContext}}:cloudrun_src"
           # file: cloudrun_src/Dockerfile
           push: true
-          tags: drtinkerer/gcp-sandbox-provisioner:latest
+          tags: drtinkerer/gcp-sandbox-provisioner:1.0.0

@@ -91,5 +91,5 @@ cloud_tasks:
 
 cloud_run:
   service_name: gcp-sandbox-provisioner
-  container_image: drtinkerer/gcp-sandbox-provisioner:latest
+  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.0
   swagger_docs_endpoint: /docs
