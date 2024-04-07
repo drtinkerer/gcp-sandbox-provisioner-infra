@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr
 from google.cloud import resourcemanager_v3, billing_v1
 from datetime import timedelta, datetime, UTC
 # from cloudrun_src.app import project_manager
-from app.project_manager import create_sandbox_project, update_project_billing_info, generate_project_id, get_active_projects_count
+from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info, generate_project_id, get_active_projects_count
 from app.tasks import create_deletion_task
 from google.protobuf.timestamp_pb2 import Timestamp
 
@@ -16,6 +16,10 @@ class SandboxCreate(BaseModel):
     user_email: EmailStr
     team_name: str = "Team-DevOps"
     requested_duration_hours: int = 2
+
+class SandboxDelete(BaseModel):
+    project_id: str
+
 
 class SandboxExtend(BaseModel):
     project_id: str
@@ -30,7 +34,7 @@ team_names = list(team_folders.keys())
 @app.post("/create_sandbox/")
 def create_user(user_data: SandboxCreate):
     """
-    This is doc for create sandbox endpoint
+    This is doc for create sandbox endpoint.
     """
     user_email = user_data.user_email
     team_name = user_data.team_name
@@ -77,11 +81,12 @@ def create_user(user_data: SandboxCreate):
     print(create_deletion_task_response)
     
     return {
-        "msg": "we got data succesfully",
+        "msg": "Sandbox project provisioned succesfully",
         "user_email": user_email,
         "team_name": team_name,
-        "project_id": project_id
-        # "project_creation_response": response
+        "project_id": project_id,
+        "project_url": f"https://console.cloud.google.com/welcome?project={project_id}",
+        "expires_at": create_deletion_task_response.schedule_time.strftime("%Y-%d-%m %H:%M:%S")
     }
 
 
@@ -92,3 +97,20 @@ def index():
 @app.get('/multiply')
 def multiply(a,b):
     return{'result': int(a)*int(b)}
+
+@app.post("/delete_sandbox")
+def delete_sandbox(user_data: SandboxDelete):
+    """
+    This is doc for delete sandbox endpoint.
+    """
+    project_id = user_data.project_id
+
+    print(f"Handling sandbox project deletion event for {project_id}")
+    delete_sandbox_project_response = delete_sandbox_project(project_id)
+
+    print(delete_sandbox_project_response)
+
+    return {
+        "msg": "Sandbox project deleted succesfully",
+        "project_id": project_id
+    }

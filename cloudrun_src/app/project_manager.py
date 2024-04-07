@@ -62,3 +62,23 @@ def get_active_projects_count(user_email_prefix, folder_id):
         if user_email_prefix in project:
             count += 1
     return count
+
+
+def delete_sandbox_project(project_id):
+    # Create a client
+    client = resourcemanager_v3.ProjectsClient()
+
+    # Initialize request argument(s)
+    request = resourcemanager_v3.DeleteProjectRequest(
+        name=f"projects/{project_id}"
+    )
+
+    # Make the request
+    operation = client.delete_project(request=request)
+
+    print("Waiting for operation to complete...")
+
+    response = operation.result()
+
+    # Handle the response
+    return response

@@ -28,7 +28,7 @@ def create_deletion_task(project_id, expiry_timestamp):
     task_object = tasks_v2.Task(
         name=f"{cloud_tasks_queue_id}/tasks/{project_id}",
         http_request=tasks_v2.HttpRequest(
-            url=cloud_run_service_url,
+            url=f"{cloud_run_service_url}/delete_sandbox",
             body=f'{{"project_id":"{project_id}"}}'.encode('utf-8'),
             headers=[("Content-Type", "application/json")],
             oidc_token=tasks_v2.OidcToken(
