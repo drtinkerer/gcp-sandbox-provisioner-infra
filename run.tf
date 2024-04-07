@@ -26,9 +26,12 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_storage_bucket_iam_member" "bucket_A" {
-  bucket     = google_storage_bucket.bucket.name
-  role       = "roles/storage.objectAdmin"
-  member     = google_service_account.sandbox-service-account.member
+  depends_on = [
+    module.project-services
+  ]
+  bucket = google_storage_bucket.bucket.name
+  role   = "roles/storage.objectAdmin"
+  member = google_service_account.sandbox-service-account.member
 }
 
 
@@ -72,19 +75,19 @@ resource "google_cloud_run_v2_service" "default" {
         value = local.config.global.max_allowed_projects_per_user
       }
       env {
-        name = "SERVICE_ACCOUNT_EMAIL"
+        name  = "SERVICE_ACCOUNT_EMAIL"
         value = google_service_account.sandbox-service-account.email
       }
       env {
-        name = "ORGANIZATION_ID"
+        name  = "ORGANIZATION_ID"
         value = data.google_organization.org.org_id
       }
       env {
-        name = "CLOUD_TASKS_DELETION_QUEUE_ID"
+        name  = "CLOUD_TASKS_DELETION_QUEUE_ID"
         value = google_cloud_tasks_queue.deletion_tasks_queue.id
       }
       env {
-        name = "CLOUDRUN_SERVICE_ID"
+        name  = "CLOUDRUN_SERVICE_ID"
         value = local.cloudrun_service_id
       }
 
