@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr
 from google.cloud import resourcemanager_v3, billing_v1
 from datetime import timedelta, datetime, UTC
 # from cloudrun_src.app import project_manager
-from app.project_manager import create_sandbox_project, update_project_billing_info, generate_project_id
+from app.project_manager import create_sandbox_project, update_project_billing_info, generate_project_id, get_active_projects_count
 from app.tasks import create_deletion_task
 from google.protobuf.timestamp_pb2 import Timestamp
 
@@ -20,6 +20,7 @@ class SandboxCreate(BaseModel):
 
 authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
 team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
+max_allowed_projects_per_user = os.environ["MAX_ALLOWED_PROJECTS_PER_USER"]
 team_names = list(team_folders.keys())
 
 
@@ -30,18 +31,23 @@ async def create_user(user_data: SandboxCreate):
     """
     user_email = user_data.user_email
     team_name = user_data.team_name
+    requested_duration_hours = user_data.requested_duration_hours
+
+    user_email_prefix = user_email.split("@")[0]
     user_email_domain = user_email.split("@")[1]
     folder_id = team_folders[team_name]
-    requested_duration_hours = user_data.requested_duration_hours
     
     if user_email_domain not in authorized_domains:
         raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} doesnt belong to authorized domains {authorized_domains}")
 
     if team_name not in team_names:
-        # folder_id = os.environ[team_name]
         raise HTTPException(status_code=400, detail=f"ERROR 400: Provided team_name {team_name} is invalid. Required value must be one in {team_names}")
 
     # Check active sandboxes
+    active_projects_count = get_active_projects_count(user_email_prefix, folder_id)
+    if active_projects_count >= max_allowed_projects_per_user:
+        raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} has reached maximum number of allowed active sandbox projects.")
+
     request_time = datetime.now(UTC)
 
     delta = timedelta(hours=requested_duration_hours)
