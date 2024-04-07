@@ -20,7 +20,7 @@ class SandboxCreate(BaseModel):
 
 authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
 team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
-max_allowed_projects_per_user = os.environ["MAX_ALLOWED_PROJECTS_PER_USER"]
+max_allowed_projects_per_user = int(os.environ["MAX_ALLOWED_PROJECTS_PER_USER"])
 team_names = list(team_folders.keys())
 
 

@@ -52,6 +52,7 @@ iam_roles:
       - "resourcemanager.projects.create"
       - "resourcemanager.organizations.get"
       - "resourcemanager.projects.get"
+      - "resourcemanager.projects.list"
       - "resourcemanager.folders.list"
       - "resourcemanager.folders.get"
       - "resourcemanager.projects.createBillingAssignment"
@@ -92,5 +93,5 @@ cloud_tasks:
 
 cloud_run:
   service_name: gcp-sandbox-provisioner
-  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.2
+  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.3
   swagger_docs_endpoint: /docs
