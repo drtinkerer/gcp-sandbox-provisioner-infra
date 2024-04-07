@@ -4,24 +4,20 @@ from fastapi import FastAPI, HTTPException
 from datetime import timedelta, datetime, UTC
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from app.base_models import SandboxCreate, SandboxDelete, SandboxExtend
+from app.base_models import SandboxCreate, SandboxDelete, SandboxExtend, authorized_domains, team_folders, team_names
 from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info
 from app.utils import generate_project_id, get_active_projects_count, get_cloud_task_expiry_time, delete_cloud_task, list_cloud_tasks
 from app.cloud_tasks_manager import create_deletion_task
 
 app = FastAPI()
 
-
-authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
-team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
 max_allowed_projects_per_user = int(os.environ["MAX_ALLOWED_PROJECTS_PER_USER"])
-team_names = list(team_folders.keys())
 
 
 @app.post("/create_sandbox/")
 def create_sandbox(user_data: SandboxCreate):
     """
-    This is doc for create sandbox endpoint.
+    Creates a google cloud sandbox project based on the provided user data.
     """
     user_email = user_data.user_email
     team_name = user_data.team_name
@@ -29,13 +25,14 @@ def create_sandbox(user_data: SandboxCreate):
 
     user_email_prefix = user_email.split("@")[0].replace(".", "-")
     user_email_domain = user_email.split("@")[1]
-    folder_id = team_folders[team_name]
     
     if user_email_domain not in authorized_domains:
         raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} doesnt belong to authorized domains {authorized_domains}")
 
     if team_name not in team_names:
         raise HTTPException(status_code=400, detail=f"ERROR 400: Provided team_name {team_name} is invalid. Required value must be one in {team_names}")
+
+    folder_id = team_folders[team_name]
 
     # Check active sandboxes
     active_projects_count = get_active_projects_count(user_email_prefix, folder_id)
@@ -68,6 +65,7 @@ def create_sandbox(user_data: SandboxCreate):
         "user_email": user_email,
         "team_name": team_name,
         "project_id": project_id,
+        "folder_id": folder_id,
         "billing_enabled": updated_project_billing_response.billing_enabled,
         "project_url": f"https://console.cloud.google.com/welcome?project={project_id}",
         "created_at": create_project_response.create_time.strftime("%Y-%d-%m %H:%M:%S UTC"),
@@ -86,7 +84,7 @@ def multiply(a,b):
 @app.post("/delete_sandbox")
 def delete_sandbox(user_data: SandboxDelete):
     """
-    This is doc for delete sandbox endpoint.
+    Deletes a google cloud sandbox project based on the provided user data.
     """
     project_id = user_data.project_id
 
@@ -104,7 +102,8 @@ def delete_sandbox(user_data: SandboxDelete):
 @app.post("/extend_sandbox_duration")
 def extend_sandbox(user_data: SandboxExtend):
     """
-    This is doc for extending sandbox duration endpoint.
+    Extends the deletion/expirty of the active sandbox project.
+    This endpoint needs to be triggered before original scheduled trigger is executed.
     """
     project_id = user_data.project_id
     extend_by_hours = user_data.extend_by_hours
@@ -127,7 +126,7 @@ def extend_sandbox(user_data: SandboxExtend):
     # Create new task with updated expiry time
     print("Creating updated task with new expiry")
     random_suffix = int(datetime.now(UTC).timestamp())
-    updated_task_name = f"{project_id}-{random_suffix}"
+    updated_task_name = f"{project_id}-extended-{random_suffix}"
     create_deletion_task_response = create_deletion_task(project_id, updated_task_name, new_expiry_timestamp_proto)
     print("Creating updated task with new expiry success")
     print(create_deletion_task_response)
