@@ -7,7 +7,7 @@ cloud_run_service_id = os.environ["CLOUDRUN_SERVICE_ID"]
 master_service_account_email = os.environ["SERVICE_ACCOUNT_EMAIL"]
 
 
-def create_deletion_task(project_id, expiry_timestamp):
+def create_deletion_task(project_id, task_name, expiry_timestamp):
     client = tasks_v2.CloudTasksClient()
 
     cloud_run_service_url = get_cloud_run_service_url(cloud_run_service_id)
@@ -15,7 +15,7 @@ def create_deletion_task(project_id, expiry_timestamp):
     cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
 
     task_object = tasks_v2.Task(
-        name=f"{cloud_tasks_queue_id}/tasks/{project_id}",
+        name=f"{cloud_tasks_queue_id}/tasks/{task_name}",
         http_request=tasks_v2.HttpRequest(
             url=f"{cloud_run_service_url}/delete_sandbox",
             body=f'{{"project_id":"{project_id}"}}'.encode('utf-8'),

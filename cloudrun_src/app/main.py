@@ -60,7 +60,7 @@ def create_sandbox(user_data: SandboxCreate):
     print(f"Successfuly linked project {project_id} to billing account.")
 
     print(f"Creating deletion task for Project {project_id} on Google Cloud Tasks queue...")
-    create_deletion_task_response = create_deletion_task(project_id, expiry_timestamp)
+    create_deletion_task_response = create_deletion_task(project_id, project_id, expiry_timestamp)
     print(f"Successfully created deletion task for Project {project_id} on Google Cloud Tasks queue.")
     
     return {
@@ -128,7 +128,7 @@ def extend_sandbox(user_data: SandboxExtend):
     print("Creating updated task with new expiry")
     random_suffix = int(datetime.now(UTC).timestamp())
     updated_task_name = f"{project_id}-{random_suffix}"
-    create_deletion_task_response = create_deletion_task(updated_task_name, new_expiry_timestamp_proto)
+    create_deletion_task_response = create_deletion_task(project_id, updated_task_name, new_expiry_timestamp_proto)
     print("Creating updated task with new expiry success")
     print(create_deletion_task_response)
 

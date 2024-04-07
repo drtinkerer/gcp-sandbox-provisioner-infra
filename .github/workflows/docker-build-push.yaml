@@ -25,4 +25,4 @@ jobs:
         with:
           context: "{{defaultContext}}:cloudrun_src"
           push: true
-          tags: drtinkerer/gcp-sandbox-provisioner:1.0.0
+          tags: drtinkerer/gcp-sandbox-provisioner:1.0.1
