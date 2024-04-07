@@ -36,7 +36,7 @@ def create_user(user_data: SandboxCreate):
     team_name = user_data.team_name
     requested_duration_hours = user_data.requested_duration_hours
 
-    user_email_prefix = user_email.split("@")[0]
+    user_email_prefix = user_email.split("@")[0].replace(".", "-")
     user_email_domain = user_email.split("@")[1]
     folder_id = team_folders[team_name]
     
