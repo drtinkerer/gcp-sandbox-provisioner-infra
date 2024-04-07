@@ -33,8 +33,6 @@ async def create_user(user_data: SandboxCreate):
     user_email_domain = user_email.split("@")[1]
     folder_id = team_folders[team_name]
     requested_duration_hours = user_data.requested_duration_hours
-
-    # event_type = user_data.event_type
     
     if user_email_domain not in authorized_domains:
         raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} doesnt belong to authorized domains {authorized_domains}")
