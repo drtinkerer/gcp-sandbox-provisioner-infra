@@ -11,7 +11,7 @@ class SandboxCreate(BaseModel):
     user_email: EmailStr = Field(..., description=f"Email address of the user requesting the sandbox. User must belong to {authorized_domains}")
     team_name: str = Field("Team-DevOps", description=f"Name of the team to which the sandbox belongs. Team name must be one in {team_names}")
     requested_duration_hours: int = Field(2, description="Requested duration of the sandbox in hours.")
-
+    request_description: str = Field("POC On ", description="Description for sandbox requirement.")
 
 class SandboxDelete(BaseModel):
     project_id: str = Field(...,description="ID of the project to be deleted.")

@@ -22,6 +22,7 @@ def create_sandbox(user_data: SandboxCreate):
     user_email = user_data.user_email
     team_name = user_data.team_name
     requested_duration_hours = user_data.requested_duration_hours
+    request_description = user_data.request_description
 
     user_email_prefix = user_email.split("@")[0].replace(".", "-")
     user_email_domain = user_email.split("@")[1]
@@ -66,6 +67,7 @@ def create_sandbox(user_data: SandboxCreate):
         "team_name": team_name,
         "project_id": project_id,
         "folder_id": folder_id,
+        "request_description": request_description,
         "billing_enabled": updated_project_billing_response.billing_enabled,
         "project_url": f"https://console.cloud.google.com/welcome?project={project_id}",
         "created_at": create_project_response.create_time.strftime("%Y-%d-%m %H:%M:%S UTC"),
