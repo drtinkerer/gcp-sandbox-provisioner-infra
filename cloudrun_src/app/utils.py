@@ -67,3 +67,23 @@ def delete_cloud_task(task_id):
     response = client.delete_task(request=request)
 
     return response
+
+
+def list_cloud_tasks(project_id):
+    # Create a client
+    client = tasks_v2.CloudTasksClient()
+    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
+
+    # Initialize request argument(s)
+    request = tasks_v2.ListTasksRequest(
+        parent=cloud_tasks_queue_id
+    )
+
+    # Make the request
+    page_result = client.list_tasks(request=request)
+    # Handle the response
+    filtered_task = [response.name for response in page_result if project_id in response.name]
+
+    for response in page_result:
+        if project_id in response.name:
+            return response.name, int(response.schedule_time.timestamp())

@@ -6,7 +6,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 
 from app.base_models import SandboxCreate, SandboxDelete, SandboxExtend
 from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info
-from app.utils import generate_project_id, get_active_projects_count, get_cloud_task_expiry_time, delete_cloud_task
+from app.utils import generate_project_id, get_active_projects_count, get_cloud_task_expiry_time, delete_cloud_task, list_cloud_tasks
 from app.cloud_tasks_manager import create_deletion_task
 
 app = FastAPI()
@@ -19,7 +19,7 @@ team_names = list(team_folders.keys())
 
 
 @app.post("/create_sandbox/")
-def create_user(user_data: SandboxCreate):
+def create_sandbox(user_data: SandboxCreate):
     """
     This is doc for create sandbox endpoint.
     """
@@ -102,18 +102,16 @@ def delete_sandbox(user_data: SandboxDelete):
 
 
 @app.post("/extend_sandbox_duration")
-def delete_sandbox(user_data: SandboxExtend):
+def extend_sandbox(user_data: SandboxExtend):
     """
     This is doc for extending sandbox duration endpoint.
     """
     project_id = user_data.project_id
     extend_by_hours = user_data.extend_by_hours
-    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
-    task_id = f"{cloud_tasks_queue_id}/tasks/{project_id}"
+    task_id, current_expiry_timestamp = list_cloud_tasks(project_id)
     
     new_expiry_timestamp_proto = Timestamp()
-    print(task_id)
-    current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
+    # current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
     new_expiry_timestamp_proto.FromSeconds(current_expiry_timestamp + (3600 * extend_by_hours))
 
     # Delete old task
@@ -124,12 +122,14 @@ def delete_sandbox(user_data: SandboxExtend):
 
     # Create new task with updated expiry time
     print("Creating updated task with new expiry")
-    create_deletion_task_response = create_deletion_task(project_id, new_expiry_timestamp_proto)
+    random_suffix = int(datetime.now(UTC).timestamp())
+    updated_task_name = f"{project_id}-{random_suffix}"
+    create_deletion_task_response = create_deletion_task(updated_task_name, new_expiry_timestamp_proto)
     print("Creating updated task with new expiry success")
     print(create_deletion_task_response)
 
     return {
-        "detail": "Sandbox project expiry extended by {extend_by_hours} hours succesfully",
+        "detail": f"Sandbox project expiry extended by {extend_by_hours} hours succesfully",
         "project_id": project_id,
         "new_expiry": create_deletion_task_response.schedule_time.strftime("%Y-%d-%m %H:%M:%S UTC")
     }
