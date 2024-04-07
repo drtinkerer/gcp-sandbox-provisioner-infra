@@ -43,6 +43,4 @@ def update_project_billing_info(project_id):
 
     # Make the request
     response = client.update_project_billing_info(request=request)
-
-    # Handle the response
     return response
