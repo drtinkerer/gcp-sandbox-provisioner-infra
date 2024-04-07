@@ -44,7 +44,6 @@ def update_project_billing_info(project_id):
     response = client.update_project_billing_info(request=request)
     return response
 
-
 def get_active_projects_count(user_email_prefix, folder_id):
     client = resourcemanager_v3.ProjectsClient()
 
