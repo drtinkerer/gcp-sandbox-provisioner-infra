@@ -27,5 +27,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: cloudrun_src
+          file: cloudrun_src/Dockerfile
           push: true
           tags: drtinkerer/gcp-sandbox-provisioner:latest
