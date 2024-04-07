@@ -41,7 +41,6 @@ async def create_user(user_data: SandboxCreate):
         # folder_id = os.environ[team_name]
         raise HTTPException(status_code=400, detail=f"ERROR 400: Provided team_name {team_name} is invalid. Required value must be one in {team_names}")
 
-
     # Check active sandboxes
     request_time = datetime.now(UTC)
 
