@@ -108,7 +108,11 @@ def extend_sandbox(user_data: SandboxExtend):
     """
     project_id = user_data.project_id
     extend_by_hours = user_data.extend_by_hours
-    task_id, current_expiry_timestamp = list_cloud_tasks(project_id)
+    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
+    try:
+        task_id, current_expiry_timestamp = f"{cloud_tasks_queue_id}/tasks/{project_id}", get_cloud_task_expiry_time(task_id)
+    except:
+        task_id, current_expiry_timestamp = list_cloud_tasks(project_id)
     
     new_expiry_timestamp_proto = Timestamp()
     # current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
