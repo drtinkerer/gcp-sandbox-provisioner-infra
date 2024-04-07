@@ -17,6 +17,9 @@ class SandboxCreate(BaseModel):
     team_name: str = "Team-DevOps"
     requested_duration_hours: int = 2
 
+class SandboxExtend(BaseModel):
+    project_id: str
+    extend_by_hours: int = 4
 
 authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
 team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
@@ -25,7 +28,7 @@ team_names = list(team_folders.keys())
 
 
 @app.post("/create_sandbox/")
-async def create_user(user_data: SandboxCreate):
+def create_user(user_data: SandboxCreate):
     """
     This is doc for create sandbox endpoint
     """
@@ -45,6 +48,8 @@ async def create_user(user_data: SandboxCreate):
 
     # Check active sandboxes
     active_projects_count = get_active_projects_count(user_email_prefix, folder_id)
+    print("Active = ", active_projects_count)
+    print("Allowd = ", max_allowed_projects_per_user)
     if active_projects_count >= max_allowed_projects_per_user:
         raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} has reached maximum number of allowed active sandbox projects.")
 
