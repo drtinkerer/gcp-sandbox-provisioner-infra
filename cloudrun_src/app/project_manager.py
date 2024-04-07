@@ -27,7 +27,6 @@ def generate_project_id(user_email, current_timestamp):
     extract_prefix = user_email.split("@")[0].replace(".", "-")
     return f"{extract_prefix}-{current_timestamp}"
 
-
 def update_project_billing_info(project_id):
 
     billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
