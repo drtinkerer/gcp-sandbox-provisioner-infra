@@ -20,14 +20,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Debug
-        run: ls -l
-        
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:cloudrun_src"
-          # file: cloudrun_src/Dockerfile
           push: true
           tags: drtinkerer/gcp-sandbox-provisioner:1.0.1
