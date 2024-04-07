@@ -1,6 +1,5 @@
 import os
 from google.cloud import tasks_v2
-from google.protobuf.timestamp_pb2 import Timestamp
 from datetime import timedelta, datetime, UTC
 from google.cloud import run_v2
 
@@ -19,13 +18,8 @@ def get_cloud_run_service_url():
     return response.uri
 
 
-def create_deletion_task(project_id, request_time, requested_duration_hours):
+def create_deletion_task(project_id, expiry_timestamp):
     client = tasks_v2.CloudTasksClient()
-
-    delta = timedelta(hours=requested_duration_hours)
-
-    expiry_timestamp = Timestamp()
-    expiry_timestamp.FromDatetime(request_time + delta)
 
     cloud_run_service_url = get_cloud_run_service_url(cloud_run_service_id)
 

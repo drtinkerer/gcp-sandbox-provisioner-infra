@@ -7,6 +7,8 @@ from datetime import timedelta, datetime, UTC
 # from cloudrun_src.app import project_manager
 from app.project_manager import create_sandbox_project, update_project_billing_info, generate_project_id
 from app.tasks import create_deletion_task
+from google.protobuf.timestamp_pb2 import Timestamp
+
 
 app = FastAPI()
 
@@ -44,21 +46,28 @@ async def create_user(user_data: SandboxCreate):
 
     # Check active sandboxes
     request_time = datetime.now(UTC)
+
+    delta = timedelta(hours=requested_duration_hours)
+    expiry_timestamp = Timestamp()
+    expiry_timestamp.FromDatetime(request_time + delta)
+
     current_timestamp = int(request_time.timestamp())
     project_id = generate_project_id(user_email, current_timestamp)
 
     print(f"Handling sandbox project creation event for {user_email}")
-    response = create_sandbox_project(project_id, folder_id)
+    create_project_response = create_sandbox_project(project_id, folder_id)
     print(f"Project {project_id} creation completed.")
+    print(create_project_response)
 
     print(f"Linking project {project_id} to billing account...")
-    update_project_billing_info(project_id)
+    updated_project_billing_response = update_project_billing_info(project_id)
     print(f"Successfuly linked project {project_id} to billing account.")
+    print(updated_project_billing_response)
 
     print(f"Creating deletion task for Project {project_id} on Google Cloud Tasks queue...")
-    create_deletion_task(project_id, request_time, requested_duration_hours)
-
-    print(response)
+    create_deletion_task_response = create_deletion_task(project_id, expiry_timestamp)
+    print(create_deletion_task_response)
+    
     return {
         "msg": "we got data succesfully",
         "user_email": user_email,

@@ -4,7 +4,7 @@ from datetime import timedelta, datetime, UTC
 from app.tasks import create_deletion_task
 
 
-def create_sandbox_project(project_id, folder_id, request_time):
+def create_sandbox_project(project_id, folder_id):
 
     client = resourcemanager_v3.ProjectsClient()
 
