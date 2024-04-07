@@ -81,9 +81,8 @@ def list_cloud_tasks(project_id):
 
     # Make the request
     page_result = client.list_tasks(request=request)
-    # Handle the response
-    filtered_task = [response.name for response in page_result if project_id in response.name]
 
+    # Handle the response
     for response in page_result:
         if project_id in response.name:
-            return response.name, int(response.schedule_time.timestamp())
+            return response.name

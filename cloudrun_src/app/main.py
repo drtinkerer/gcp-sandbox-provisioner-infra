@@ -110,12 +110,12 @@ def extend_sandbox(user_data: SandboxExtend):
     extend_by_hours = user_data.extend_by_hours
     cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
     try:
-        task_id, current_expiry_timestamp = f"{cloud_tasks_queue_id}/tasks/{project_id}", get_cloud_task_expiry_time(task_id)
+        task_id = list_cloud_tasks(project_id)
     except:
-        task_id, current_expiry_timestamp = list_cloud_tasks(project_id)
-    
+        task_id = f"{cloud_tasks_queue_id}/tasks/{project_id}"
+        
     new_expiry_timestamp_proto = Timestamp()
-    # current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
+    current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
     new_expiry_timestamp_proto.FromSeconds(current_expiry_timestamp + (3600 * extend_by_hours))
 
     # Delete old task
