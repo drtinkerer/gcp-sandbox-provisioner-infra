@@ -18,8 +18,8 @@ folder:
   team_folders:
     - "Team-DevOps"
     - "Team-Data"
-    - "Team-3"
-    - "Team-4"
+    # - "Team-3"
+    # - "Team-4"
 
 project:
   master_display_name: "Sandbox Master"
@@ -93,5 +93,5 @@ cloud_tasks:
 
 cloud_run:
   service_name: gcp-sandbox-provisioner
-  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.6
+  container_image: drtinkerer/gcp-sandbox-provisioner:1.0.7
   swagger_docs_endpoint: /docs

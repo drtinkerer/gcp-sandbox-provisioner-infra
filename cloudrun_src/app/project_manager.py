@@ -1,7 +1,5 @@
 import os
 from google.cloud import resourcemanager_v3, billing_v1
-from datetime import timedelta, datetime, UTC
-from app.tasks import create_deletion_task
 
 
 def create_sandbox_project(project_id, folder_id):
@@ -23,10 +21,6 @@ def create_sandbox_project(project_id, folder_id):
     return response
 
 
-def generate_project_id(user_email, current_timestamp):
-    extract_prefix = user_email.split("@")[0].replace(".", "-")
-    return f"{extract_prefix}-{current_timestamp}"
-
 def update_project_billing_info(project_id):
 
     billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
@@ -44,25 +38,6 @@ def update_project_billing_info(project_id):
     response = client.update_project_billing_info(request=request)
     return response
 
-def get_active_projects_count(user_email_prefix, folder_id):
-    client = resourcemanager_v3.ProjectsClient()
-
-    # Initialize request argument(s)
-    request = resourcemanager_v3.ListProjectsRequest(
-        parent=folder_id,
-    )
-
-    # Make the request
-    page_result = client.list_projects(request=request)
-
-    project_list = [response.project_id for response in page_result]
-
-    count = 0
-    for project in project_list:
-        if user_email_prefix in project:
-            count += 1
-    return count
-
 
 def delete_sandbox_project(project_id):
     # Create a client
@@ -75,9 +50,6 @@ def delete_sandbox_project(project_id):
 
     # Make the request
     operation = client.delete_project(request=request)
-
-    print("Waiting for operation to complete...")
-
     response = operation.result()
 
     # Handle the response

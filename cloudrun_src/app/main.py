@@ -1,29 +1,16 @@
 import os
 import json
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, EmailStr
-from google.cloud import resourcemanager_v3, billing_v1
 from datetime import timedelta, datetime, UTC
-# from cloudrun_src.app import project_manager
-from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info, generate_project_id, get_active_projects_count
-from app.tasks import create_deletion_task
 from google.protobuf.timestamp_pb2 import Timestamp
 
+from app.base_models import SandboxCreate, SandboxDelete, SandboxExtend
+from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info
+from app.utils import generate_project_id, get_active_projects_count
+from app.cloud_tasks_manager import create_deletion_task
 
 app = FastAPI()
 
-class SandboxCreate(BaseModel):
-    user_email: EmailStr
-    team_name: str = "Team-DevOps"
-    requested_duration_hours: int = 2
-
-class SandboxDelete(BaseModel):
-    project_id: str
-
-
-class SandboxExtend(BaseModel):
-    project_id: str
-    extend_by_hours: int = 4
 
 authorized_domains = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")    
 team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
@@ -52,8 +39,6 @@ def create_user(user_data: SandboxCreate):
 
     # Check active sandboxes
     active_projects_count = get_active_projects_count(user_email_prefix, folder_id)
-    print("Active = ", active_projects_count)
-    print("Allowd = ", max_allowed_projects_per_user)
     if active_projects_count >= max_allowed_projects_per_user:
         raise HTTPException(status_code=400, detail=f"ERROR 400: User {user_email} has reached maximum number of allowed active sandbox projects.")
 
@@ -69,24 +54,24 @@ def create_user(user_data: SandboxCreate):
     print(f"Handling sandbox project creation event for {user_email}")
     create_project_response = create_sandbox_project(project_id, folder_id)
     print(f"Project {project_id} creation completed.")
-    print(create_project_response)
 
     print(f"Linking project {project_id} to billing account...")
     updated_project_billing_response = update_project_billing_info(project_id)
     print(f"Successfuly linked project {project_id} to billing account.")
-    print(updated_project_billing_response)
 
     print(f"Creating deletion task for Project {project_id} on Google Cloud Tasks queue...")
     create_deletion_task_response = create_deletion_task(project_id, expiry_timestamp)
     print(create_deletion_task_response)
     
     return {
-        "msg": "Sandbox project provisioned succesfully",
+        "detail": "Sandbox project provisioned succesfully",
         "user_email": user_email,
         "team_name": team_name,
         "project_id": project_id,
+        "billing_enabled": updated_project_billing_response.billing_enabled,
         "project_url": f"https://console.cloud.google.com/welcome?project={project_id}",
-        "expires_at": create_deletion_task_response.schedule_time.strftime("%Y-%d-%m %H:%M:%S")
+        "created_at": create_project_response.create_time.strftime("%Y-%d-%m %H:%M:%S UTC"),
+        "expires_at": create_deletion_task_response.schedule_time.strftime("%Y-%d-%m %H:%M:%S UTC")
     }
 
 
@@ -107,10 +92,20 @@ def delete_sandbox(user_data: SandboxDelete):
 
     print(f"Handling sandbox project deletion event for {project_id}")
     delete_sandbox_project_response = delete_sandbox_project(project_id)
-
-    print(delete_sandbox_project_response)
+    print(f"Project {project_id} deletion completed.")
 
     return {
-        "msg": "Sandbox project deleted succesfully",
-        "project_id": project_id
+        "detail": "Sandbox project deleted succesfully",
+        "project_id": project_id,
+        "deleted_at": delete_sandbox_project_response.delete_time.strftime("%Y-%d-%m %H:%M:%S UTC")
     }
+
+
+# @app.post("/extend_sandbox_duration")
+# def delete_sandbox(user_data: SandboxExtend):
+#     """
+#     This is doc for extending sandbox duration endpoint.
+#     """
+#     project_id = user_data.project_id
+#     extend_by_hours = user_data.extend_by_hours
+
