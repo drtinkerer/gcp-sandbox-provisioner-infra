@@ -6,7 +6,7 @@ from google.protobuf.timestamp_pb2 import Timestamp
 
 from app.base_models import SandboxCreate, SandboxDelete, SandboxExtend
 from app.project_manager import create_sandbox_project, delete_sandbox_project, update_project_billing_info
-from app.utils import generate_project_id, get_active_projects_count
+from app.utils import generate_project_id, get_active_projects_count, get_cloud_task_expiry_time, delete_cloud_task
 from app.cloud_tasks_manager import create_deletion_task
 
 app = FastAPI()
@@ -51,9 +51,9 @@ def create_user(user_data: SandboxCreate):
     current_timestamp = int(request_time.timestamp())
     project_id = generate_project_id(user_email, current_timestamp)
 
-    print(f"Handling sandbox project creation event for {user_email}")
+    print(f"Handling sandbox project creation event for {user_email}...")
     create_project_response = create_sandbox_project(project_id, folder_id)
-    print(f"Project {project_id} creation completed.")
+    print(f"Successfuly created project {project_id}.")
 
     print(f"Linking project {project_id} to billing account...")
     updated_project_billing_response = update_project_billing_info(project_id)
@@ -61,7 +61,7 @@ def create_user(user_data: SandboxCreate):
 
     print(f"Creating deletion task for Project {project_id} on Google Cloud Tasks queue...")
     create_deletion_task_response = create_deletion_task(project_id, expiry_timestamp)
-    print(create_deletion_task_response)
+    print(f"Successfully created deletion task for Project {project_id} on Google Cloud Tasks queue.")
     
     return {
         "detail": "Sandbox project provisioned succesfully",
@@ -92,7 +92,7 @@ def delete_sandbox(user_data: SandboxDelete):
 
     print(f"Handling sandbox project deletion event for {project_id}")
     delete_sandbox_project_response = delete_sandbox_project(project_id)
-    print(f"Project {project_id} deletion completed.")
+    print(f"Succssfully deleted Project {project_id}.")
 
     return {
         "detail": "Sandbox project deleted succesfully",
@@ -101,11 +101,35 @@ def delete_sandbox(user_data: SandboxDelete):
     }
 
 
-# @app.post("/extend_sandbox_duration")
-# def delete_sandbox(user_data: SandboxExtend):
-#     """
-#     This is doc for extending sandbox duration endpoint.
-#     """
-#     project_id = user_data.project_id
-#     extend_by_hours = user_data.extend_by_hours
+@app.post("/extend_sandbox_duration")
+def delete_sandbox(user_data: SandboxExtend):
+    """
+    This is doc for extending sandbox duration endpoint.
+    """
+    project_id = user_data.project_id
+    extend_by_hours = user_data.extend_by_hours
+    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
+    task_id = f"{cloud_tasks_queue_id}/tasks/{project_id}"
+    
+    new_expiry_timestamp_proto = Timestamp()
 
+    current_expiry_timestamp = get_cloud_task_expiry_time(task_id)
+    new_expiry_timestamp_proto.FromSeconds(current_expiry_timestamp + (3600 * extend_by_hours))
+
+    # Delete old task
+    print("Deleting task")
+    delete_cloud_task_response = delete_cloud_task(task_id)
+    print("Deleting task success")
+    print(delete_cloud_task_response)
+
+    # Create new task with updated expiry time
+    print("Creating updated task with new expiry")
+    create_deletion_task_response = create_deletion_task(project_id, new_expiry_timestamp_proto)
+    print("Creating updated task with new expiry success")
+    print(create_deletion_task_response)
+
+    return {
+        "detail": "Sandbox project expiry extended by {extend_by_hours} hours succesfully",
+        "project_id": project_id,
+        "new_expiry": create_deletion_task_response.schedule_time.strftime("%Y-%d-%m %H:%M:%S UTC")
+    }

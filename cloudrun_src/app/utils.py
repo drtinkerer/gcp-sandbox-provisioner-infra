@@ -1,4 +1,5 @@
-from google.cloud import resourcemanager_v3, run_v2
+import os
+from google.cloud import resourcemanager_v3, run_v2, tasks_v2
 
 
 def generate_project_id(user_email, current_timestamp):
@@ -35,3 +36,34 @@ def get_cloud_run_service_url(cloud_run_service_id):
 
     response = client.get_service(request=request)
     return response.uri
+
+
+def get_cloud_task_expiry_time(task_id):
+    # Create a client
+    client = tasks_v2.CloudTasksClient()
+
+    # Initialize request argument(s)
+    request = tasks_v2.GetTaskRequest(
+        name=task_id
+    )
+
+    # Make the request
+    response = client.get_task(request=request)
+
+    # Handle the response
+    return int(response.schedule_time.timestamp())
+
+
+def delete_cloud_task(task_id):
+    # Create a client
+    client = tasks_v2.CloudTasksClient()
+
+    # Initialize request argument(s)
+    request = tasks_v2.DeleteTaskRequest(
+        name=task_id,
+    )
+
+    # Make the request
+    response = client.delete_task(request=request)
+
+    return response
