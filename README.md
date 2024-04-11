@@ -57,4 +57,4 @@ terraform apply --auto-approve
 - [Terraform Documentation](https://learn.hashicorp.com/collections/terraform/gcp-get-started)
 - [Google Cloud Documentation](https://cloud.google.com/docs)
 
-That's it! You've successfully provisioned GCP sandbox projects using Terraform. Happy exploring!
+That's it! You've successfully provisioned GCP sandbox provisioner using Terraform. Happy exploring!
