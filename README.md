@@ -50,8 +50,8 @@ Apply the Terraform configuration to provision the GCP sandbox projects. Use the
 terraform apply --auto-approve
 ```
 
-### Step 5: Explore the Provisioned Sandbox Projects
-Once the Terraform apply process completes, you can explore the provisioned GCP sandbox projects in the Google Cloud Console. Experiment with the resources and services within these sandbox environments as needed.
+### Step 5: Explore the GCP Provisioner Backend API Swagger documentation
+
 
 ### Additional Resources
 - [Terraform Documentation](https://learn.hashicorp.com/collections/terraform/gcp-get-started)
