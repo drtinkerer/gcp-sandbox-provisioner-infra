@@ -2,7 +2,10 @@
 
 The GCP Sandbox Provisioner is a project designed to provide time-based Google Cloud Platform (GCP) sandbox projects that automatically expire after a specified duration.
 
-With this tool, users can quickly and easily create temporary sandbox environments on GCP for testing, development, or learning purposes. These sandbox projects are automatically provisioned with the necessary resources and configurations, allowing users to explore and experiment with GCP services without worrying about long-term commitments or resource cleanup.
+GCP Sandbox Provisioner is a backend application running on a FastAPI Python server. Users interact with this backend by making API calls to a Google Cloud Run instance running as a Docker container. Users have the flexibility to choose their own frontend to interact with these backend services.
+
+With this tool, users can quickly and easily create temporary sandbox environments on GCP for testing, development, or learning purposes. 
+These sandbox projects are automatically provisioned with the necessary resources and configurations, allowing users to explore and experiment with GCP services without worrying about long-term commitments or resource cleanup.
 
 Additionally, users have the flexibility to extend the duration of their sandbox projects on the go, allowing for continued exploration and experimentation beyond the initial expiration period.
 
