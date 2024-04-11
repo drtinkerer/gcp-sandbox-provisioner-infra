@@ -6,18 +6,25 @@ output "ORG_ID" {
   value = data.google_organization.org.org_id
 }
 
-output "CLOUD_TASKS_DELETION_QUEUE_ID" {
-  value = google_cloud_tasks_queue.deletion_tasks_queue.id
+output "CLOUD_RUN_URI" {
+  value = google_cloud_run_v2_service.default.uri
 }
 
-# output "CLOUD_FUNCTION_URI_GEN_1" {
-#   value = "https://${local.config.global.location}-${google_project.sandbox-master-project.project_id}.cloudfunctions.net/${module.cloud_functions2.function_name}"
-# }
+output "AUTHORIZED_TEAM_NAMES" {
+  value = local.config.folder.team_folders
+}
 
-# output "CLOUD_FUNCTION_URI_GEN_2" {
-#   value = module.cloud_functions2.function_uri
-# }
+output "AUTHORIZED_DOMAINS" {
+  value = local.config.global.authorized_domains
+}
 
+output "GENERATE_OAUTH_HEADER_COMMAND" {
+  value = "gcloud auth print-identity-token"
+}
+
+output "SANDBOX_MASTER_PROJECT_ID" {
+  value = google_project.sandbox-master-project.id
+}
 # output "SERVICE_ACCOUNT_EMAIL" {
 #   value = google_service_account.sandbox-service-account.email
 # }
