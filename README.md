@@ -24,6 +24,9 @@ Before you begin, ensure you have the following prerequisites:
 
  - **Terraform Installed**: Ensure you have Terraform installed on your local machine. You can follow the instructions provided in the [official Terraform documentation](https://learn.hashicorp.com/tutorials/terraform/install-cli).
 
+ - **Parent folder decision**: By default, a folder by the name `Sandbox Provisioner` will be created directly under the organiation in hierarchy. You can, however, configure it to be under specific folder by updating `config.yaml` accordingly.
+ The paremeter to update in this case is `config.folder.parent_id`
+
  - **GCP Authentication**: Before running Terraform commands, authenticate with your GCP account using the following commands:
    ```
    gcloud auth login
