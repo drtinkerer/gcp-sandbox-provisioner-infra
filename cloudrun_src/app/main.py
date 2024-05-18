@@ -13,6 +13,7 @@ app = FastAPI()
 
 max_allowed_projects_per_user = int(os.environ["MAX_ALLOWED_PROJECTS_PER_USER"])
 
+variable = "Dummy"
 
 @app.post("/create_sandbox/")
 def create_sandbox(user_data: SandboxCreate):
