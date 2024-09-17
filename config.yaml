@@ -8,6 +8,7 @@ global:
     - "example.com"
   max_allowed_projects_per_user: 1
 
+
 folder:
   master_display_name: "Sanbox Provisioner"
   # By default, the master folder will get created on organization level.
@@ -18,8 +19,8 @@ folder:
   team_folders:
     - "Team-DevOps"
     - "Team-Data"
-    # - "Team-3"
-    # - "Team-4"
+    - "Team-3"
+    - "Team-4"
 
 project:
   master_display_name: "Sandbox Master"
@@ -46,8 +47,8 @@ service_account:
 
 iam_roles:
   org_level_role:
-    title: "Sandbox Provisioner Org Level Role"
-    role_id: "sandbox_provisioner_org"
+    title: "Sandbox Provisioner Organization Level Role"
+    role_id: "sandbox_provisioner_organization_level_role"
     permissions:
       - "resourcemanager.projects.create"
       - "resourcemanager.organizations.get"
@@ -63,7 +64,7 @@ iam_roles:
 
   project_level_role:
     title: "Sandbox Provisioner Project Level Role"
-    role_id: "sandbox_provisioner_project"
+    role_id: "sandbox_provisioner_project_level_role"
     permissions:
       # - "cloudfunctions.functions.get"
       # - "cloudfunctions.locations.list"
