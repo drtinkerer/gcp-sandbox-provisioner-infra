@@ -3,7 +3,7 @@ name: docker-build-push
 on:
   push:
     branches:
-      - "main"
+      - "slack-integrated"
     paths:
       - "cloudrun_src/**"
 
@@ -25,4 +25,4 @@ jobs:
         with:
           context: "{{defaultContext}}:cloudrun_src"
           push: true
-          tags: drtinkerer/gcp-sandbox-provisioner:1.0.4
+          tags: drtinkerer/gcp-sandbox-provisioner:1.0.0
