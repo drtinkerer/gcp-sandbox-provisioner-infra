@@ -1,24 +1,3 @@
-# module "cloud_run" {
-#   source     = "GoogleCloudPlatform/cloud-run/google"
-
-#   depends_on = [
-#     google_service_account.sandbox-service-account,
-#     module.project-services
-#   ]
-
-#   version    = "~> 0.10.0"
-
-#   # Required variables
-#   service_name          = local.config.cloud_run.service_name
-#   project_id            = google_project.sandbox-master-project.project_id
-#   location              = local.config.global.location
-#   image                 = local.config.cloud_run.container_image
-#   service_account_email = google_service_account.sandbox-service-account.email
-#   members               = [google_service_account.sandbox-service-account.member]
-#   container_concurrency = 5
-#   env_vars = local.combined_cloudrun_env_vars
-# }
-
 resource "google_storage_bucket" "bucket" {
   depends_on = [
     module.project-services
