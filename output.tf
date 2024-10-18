@@ -25,10 +25,3 @@ output "GENERATE_OAUTH_HEADER_COMMAND" {
 output "SANDBOX_MASTER_PROJECT_ID" {
   value = google_project.sandbox-master-project.id
 }
-# output "SERVICE_ACCOUNT_EMAIL" {
-#   value = google_service_account.sandbox-service-account.email
-# }
-
-# output "GITHUB_IDP_POOL_ID" {
-#   value = module.gh_oidc.provider_name
-# }
