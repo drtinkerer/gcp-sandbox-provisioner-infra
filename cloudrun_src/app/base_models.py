@@ -3,6 +3,9 @@ import os
 import json
 from typing import List
 
+AUTHORIZED_DOMAINS = os.environ["AUTHORIZED_DOMAIN_NAMES"].split(",")
+TEAM_FOLDERS = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
+
 class SandboxCreate(BaseModel):
     user_email: EmailStr = Field(
         ...,

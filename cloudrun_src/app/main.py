@@ -1,26 +1,23 @@
 import os
+import json
 from fastapi import FastAPI, HTTPException
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_bolt.app import App
 from slack_handlers import register_handlers
 from datetime import timedelta, datetime, UTC
+from google.protobuf.timestamp_pb2 import Timestamp
+
+# Importing local packages
 from base_models import SandboxCreate
 from providers.gcp import *
-from google.protobuf.timestamp_pb2 import Timestamp
 
 # Set enviornment vars
 BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 APP_TOKEN = os.environ["SLACK_APP_TOKEN"]
 SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 
-team_folders = {
-    "Team-3": "folders/550157719134",
-    "Team-4": "folders/1005335406543",
-    "Team-Data": "folders/118001772766",
-    "Team-DevOps": "folders/330608683756"
-}
-
-max_allowed_projects_per_user = 1
+team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
+max_allowed_projects_per_user = int(os.environ["MAX_ALLOWED_PROJECTS_PER_USER"])
 
 # Load Slack Bolt
 app = App(token=BOT_TOKEN, signing_secret=SIGNING_SECRET)
@@ -37,8 +34,6 @@ register_handlers(app)
 @api.get("/")
 async def root():
     return {"OK"}
-
-
 
 @api.post("/create_gcp_sandbox/")
 def create_gcp_sandbox(user_data: SandboxCreate):

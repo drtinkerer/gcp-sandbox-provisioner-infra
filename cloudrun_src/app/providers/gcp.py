@@ -3,7 +3,8 @@ from google.cloud import resourcemanager_v3, billing_v1, run_v2, tasks_v2
 
 cloud_run_service_id = os.environ["CLOUDRUN_SERVICE_ID"]
 master_service_account_email = os.environ["SERVICE_ACCOUNT_EMAIL"]
-
+billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
+cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
 def create_sandbox_project(project_id, folder_id):
 
     client = resourcemanager_v3.ProjectsClient()
@@ -25,7 +26,6 @@ def create_sandbox_project(project_id, folder_id):
 
 def update_project_billing_info(project_id):
 
-    billing_account_id = os.environ["BILLING_ACCOUNT_ID"]
     client = billing_v1.CloudBillingClient()
 
     # Initialize request argument(s)
@@ -127,7 +127,6 @@ def delete_cloud_task(task_id):
 def list_cloud_tasks(project_id):
     # Create a client
     client = tasks_v2.CloudTasksClient()
-    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
 
     # Initialize request argument(s)
     request = tasks_v2.ListTasksRequest(
@@ -148,8 +147,6 @@ def create_deletion_task(project_id, task_name, expiry_timestamp):
     client = tasks_v2.CloudTasksClient()
 
     cloud_run_service_url = get_cloud_run_service_url(cloud_run_service_id)
-
-    cloud_tasks_queue_id = os.environ["CLOUD_TASKS_DELETION_QUEUE_ID"]
 
     task_object = tasks_v2.Task(
         name=f"{cloud_tasks_queue_id}/tasks/{task_name}",
