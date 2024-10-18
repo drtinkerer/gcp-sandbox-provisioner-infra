@@ -16,7 +16,7 @@ BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 APP_TOKEN = os.environ["SLACK_APP_TOKEN"]
 SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 
-team_folders = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
+TEAM_FOLDERS = json.loads(os.environ["AUTHORIZED_TEAM_FOLDERS"])
 max_allowed_projects_per_user = int(os.environ["MAX_ALLOWED_PROJECTS_PER_USER"])
 
 # Load Slack Bolt
@@ -45,7 +45,7 @@ def create_gcp_sandbox(user_data: SandboxCreate):
     team_name = user_data.team_name
     requested_duration_hours = int(user_data.requested_duration_hours)
     request_description = user_data.request_description
-    folder_id = team_folders[team_name]
+    folder_id = TEAM_FOLDERS[team_name]
 
     user_email_prefix = user_email.split("@")[0].replace(".", "-")
 
