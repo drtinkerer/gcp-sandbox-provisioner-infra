@@ -2,7 +2,7 @@ global:
   github_repository: drtinkerer/gcp-sandbox
   domain: "cloudpoet.in"
   location: "asia-south1"
-  billing_account_name: "My Billing Account"
+  billing_account_name: "CloudpoetMain"
   authorized_domains:
     - "cloudpoet.in"
     - "example.com"
