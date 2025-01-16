@@ -1,7 +1,6 @@
 resource "google_folder" "sandbox-master-folder" {
   display_name = local.config.folder.master_display_name
   parent       = local.master_parent_id
-
 }
 
 module "sandbox-teams-folders" {

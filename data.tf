@@ -4,11 +4,5 @@ data "google_billing_account" "account" {
 }
 
 data "google_organization" "org" {
-  domain = local.config.global.domain
-}
-
-data "archive_file" "src" {
-  type        = "zip"
-  source_dir  = "./cloud_functions_src"
-  output_path = "/tmp/sp.zip"
+  domain = local.config.global.cloud_identity_domain
 }

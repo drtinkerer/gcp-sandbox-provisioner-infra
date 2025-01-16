@@ -6,7 +6,7 @@ resource "google_cloud_tasks_queue" "deletion_tasks_queue" {
     google_project_iam_member.project_level_iam_binding,
     google_storage_bucket.bucket
   ]
-  name     = local.config.cloud_tasks.queue_name
+  name     = var.cloud_tasks_queue_name
   location = local.config.global.location
   project  = google_project.sandbox-master-project.project_id
 
