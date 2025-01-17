@@ -73,18 +73,7 @@ resource "google_cloud_run_v2_service" "default" {
         value = local.cloudrun_service_id
       }
 
-      volume_mounts {
-        name       = "mounted_bucket"
-        mount_path = "/var/state"
-      }
     }
 
-    volumes {
-      name = "mounted_bucket"
-      gcs {
-        bucket    = google_storage_bucket.bucket.name
-        read_only = false
-      }
-    }
   }
 }

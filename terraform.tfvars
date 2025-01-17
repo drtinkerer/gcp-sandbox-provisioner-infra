@@ -1,5 +1,5 @@
 # Cloud Run variables
-cloud_run_container_image = "drtinkerer/gcp-sandbox-provisioner:1.0.0"
+cloud_run_container_image = "drtinkerer/gcp-sandbox-provisioner:1.0.4"
 cloud_run_service_name    = "gcp-sandbox-provisioner"
 
 # Cloud Tasks variables
