@@ -33,7 +33,8 @@ org_level_iam_role_permissions = [
   "resourcemanager.projects.deleteBillingAssignment",
   "billing.resourceAssociations.create",
   "billing.resourceAssociations.delete",
-  "billing.resourceAssociations.list"
+  "billing.resourceAssociations.list",
+  "resourcemanager.projects.delete"
 ]
 
 # Project Level Custom IAM role variables
