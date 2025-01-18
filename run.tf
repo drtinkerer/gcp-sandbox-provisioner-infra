@@ -1,28 +1,8 @@
-resource "google_storage_bucket" "bucket" {
-  depends_on = [
-    module.project-services
-  ]
-  name     = "cloud-run-state-${google_project.sandbox-master-project.project_id}"
-  location = local.config.global.location
-  project  = google_project.sandbox-master-project.project_id
-}
-
-resource "google_storage_bucket_iam_member" "bucket_A" {
-  depends_on = [
-    module.project-services
-  ]
-  bucket = google_storage_bucket.bucket.name
-  role   = "roles/storage.objectAdmin"
-  member = google_service_account.sandbox-service-account.member
-}
-
-
 resource "google_cloud_run_v2_service" "default" {
 
   depends_on = [
     google_service_account.sandbox-service-account,
-    module.project-services,
-    google_storage_bucket.bucket
+    module.project-services
   ]
 
   name         = var.cloud_run_service_name
@@ -72,8 +52,18 @@ resource "google_cloud_run_v2_service" "default" {
         name  = "CLOUDRUN_SERVICE_ID"
         value = local.cloudrun_service_id
       }
-
+      env {
+        name  = "ENABLE_GCP_PROVISIONER"
+        value = var.enable_gcp_provisioner
+      }
+      env {
+        name  = "ENABLE_AWS_PROVISIONER"
+        value = var.enable_aws_provisioner
+      }
+      env {
+        name  = "ENABLE_AZURE_PROVISIONER"
+        value = var.enable_azure_provisioner
+      }
     }
-
   }
 }

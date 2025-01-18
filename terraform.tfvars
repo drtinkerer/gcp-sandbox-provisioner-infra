@@ -1,5 +1,5 @@
 # Cloud Run variables
-cloud_run_container_image = "drtinkerer/gcp-sandbox-provisioner:1.0.4"
+cloud_run_container_image = "drtinkerer/gcp-sandbox-provisioner:1.0.0-slim"
 cloud_run_service_name    = "gcp-sandbox-provisioner"
 
 # Cloud Tasks variables
@@ -54,3 +54,8 @@ project_level_iam_role_permissions = [
   "iam.serviceAccounts.signBlob",
   "iam.serviceAccounts.signJwt"
 ]
+
+# Feature flags
+enable_gcp_provisioner   = "True"
+enable_aws_provisioner   = "False"
+enable_azure_provisioner = "False"

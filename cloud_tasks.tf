@@ -3,8 +3,7 @@ resource "google_cloud_tasks_queue" "deletion_tasks_queue" {
     module.project-services,
     google_service_account.sandbox-service-account,
     google_project_iam_custom_role.project-level-custom-role,
-    google_project_iam_member.project_level_iam_binding,
-    google_storage_bucket.bucket
+    google_project_iam_member.project_level_iam_binding
   ]
   name     = var.cloud_tasks_queue_name
   location = local.config.global.location

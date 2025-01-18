@@ -67,3 +67,15 @@ variable "project_level_iam_role_permissions" {
   description = "List of permissions for the Project Level IAM role"
   type        = list(string)
 }
+
+variable "enable_gcp_provisioner" {
+  description = "Feature flag to enable GCP Provisioner"
+}
+
+variable "enable_aws_provisioner" {
+  description = "Feature flag to enable AWS Provisioner"
+}
+
+variable "enable_azure_provisioner" {
+  description = "Feature flag to enable Azure Provisioner"
+}
