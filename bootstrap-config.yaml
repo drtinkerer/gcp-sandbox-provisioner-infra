@@ -12,4 +12,5 @@ services:
   - "serviceusage.googleapis.com"
   - "cloudbilling.googleapis.com"
   - "iam.googleapis.com"
+  - "secretmanager.googleapis.com"
 sandbox_provisioner_container_image: "nginx:latest"

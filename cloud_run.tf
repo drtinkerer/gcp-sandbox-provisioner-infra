@@ -15,8 +15,13 @@ resource "google_cloud_run_v2_service" "default" {
         container_port = 80
       }
       env {
-        name  = "AUTH_SECRET"
-        value = random_id.auth_secret.b64_std
+        name = "AUTH_SECRET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.auth_secret.secret_id
+            version = "latest"
+          }
+        }
       }
       env {
         name  = "FIRESTORE_DATABASE_ID"
@@ -44,7 +49,9 @@ resource "google_cloud_run_v2_service" "default" {
   }
 
   depends_on = [
-    module.project_factory
+    module.project_factory,
+    google_secret_manager_secret_version.auth_secret_version,
+    google_secret_manager_secret_iam_member.secret_access
   ]
 }
 
