@@ -1,0 +1,15 @@
+parent: "organizations/291146829076"
+master_slug: "sandbox-provisioner-system"
+default_billing_account_id: "01797D-05DAA6-1864B0"
+default_region: "asia-south1"
+authorized_regions:
+  - "europe-west3"
+  - "us-central1"
+services:
+  - "run.googleapis.com"
+  - "firestore.googleapis.com"
+  - "cloudresourcemanager.googleapis.com"
+  - "serviceusage.googleapis.com"
+  - "cloudbilling.googleapis.com"
+  - "iam.googleapis.com"
+sandbox_provisioner_container_image: "nginx:latest"
