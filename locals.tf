@@ -10,7 +10,6 @@ locals {
   provisioner_roles = [
     "roles/resourcemanager.folderCreator",
     "roles/resourcemanager.projectCreator",
-    "roles/resourcemanager.projectBillingManager",
     "roles/resourcemanager.folderAdmin",
     "roles/billing.projectManager",
     "roles/serviceusage.serviceUsageAdmin",
