@@ -16,7 +16,3 @@ locals {
     "roles/iam.securityAdmin",
   ]
 }
-
-resource "random_id" "auth_secret" {
-  byte_length = 32
-}

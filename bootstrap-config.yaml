@@ -1,9 +1,10 @@
 parent: "organizations/291146829076"
 master_slug: "sandbox-provisioner-system"
 default_billing_account_id: "01797D-05DAA6-1864B0"
-default_region: "asia-south1"
+default_region: "asia-southeast1"
 authorized_regions:
   - "europe-west3"
+  - "asia-south1"
   - "us-central1"
 services:
   - "run.googleapis.com"
@@ -14,3 +15,12 @@ services:
   - "iam.googleapis.com"
   - "secretmanager.googleapis.com"
 sandbox_provisioner_container_image: "nginx:latest"
+deploy_cloud_run: false
+
+# Domain Config
+# Prerequisites:
+# 1. Domain ownership MUST be verified in Google Search Console (Webmaster Central) for the account running Terraform.
+# 2. Only supported in specific regions (e.g., us-central1, asia-southeast1, europe-west1). check: https://cloud.google.com/run/docs/mapping-domains#run_mapping_domains-gcloud
+# 3. If enabled, Terraform will output DNS records you must manually add to your DNS provider.
+enable_domain_mapping: false
+domain: "sandbox.gcp.cloudpoet.in"

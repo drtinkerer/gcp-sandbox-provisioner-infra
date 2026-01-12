@@ -1,0 +1,20 @@
+# ============================================================================
+# PHASE 2 CONFIGURATION
+# Copy this to terraform.tfvars and fill in your values
+# ============================================================================
+
+# Enable Cloud Run deployment (Phase 2)
+deploy_cloud_run = true
+
+# Container image (build and push first)
+container_image = "gcr.io/YOUR_PROJECT_ID/sandbox-provisioner:latest"
+
+# Google OAuth credentials
+google_client_id     = "YOUR_CLIENT_ID.apps.googleusercontent.com"
+google_client_secret = "YOUR_CLIENT_SECRET"
+
+# Google AI API key
+google_api_key = "YOUR_API_KEY"
+
+# Gemini model (optional, default: gemini-2.0-flash-lite)
+google_gemini_model = "gemini-2.0-flash-lite"
